@@ -88,7 +88,7 @@ const mapDispatchToProps = dispatch => {
             category,
             oldValue,
             newValue,
-            at: new Date().getTime(),
+            at: new Date().toISOString(),
           }
         }
       });

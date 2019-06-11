@@ -3,8 +3,17 @@ const initialActions = [
     actionName: "UPDATED_RECURRING_EXPENSE",
     recurringExpense: {
       name: "phone",
-      oldValue: -18.0,
+      oldValue: 0,
       newValue: -40.0,
+      at: "2019-06-11 14:22"
+    }
+  },
+  {
+    actionName: "UPDATED_RECURRING_EXPENSE",
+    recurringExpense: {
+      name: "mainIncome",
+      oldValue: 0,
+      newValue: 1200.0,
       at: "2019-06-11 14:22"
     }
   },
@@ -12,10 +21,10 @@ const initialActions = [
     actionName: "CREATED_EXPENSE",
     expense: {
       guid: "0skm2io3m-0asmd",
-      value: 7.0,
-      type: "Transportation",
+      value: -7.0,
+      tag: "Transportation",
       at: "2019-06-11 14:25",
-      note: "This is simply not my way"
+      note: "Uber to work"
     }
   }
 ];

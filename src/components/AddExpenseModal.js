@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { connect } from "react-redux";
 import styled from "styled-components";
-import { ChoiceBar, ChoiceItem }  from "./DailyTracker";
+import { ChoiceBar, ChoiceItem } from "./DailyTracker";
 import ExpenseInput from "./ExpenseInput";
+import uuid from "uuid/v4";
 
 const ModalContainer = styled(Modal)`
   &.show {
@@ -53,25 +55,91 @@ const ModalFooter = styled(Modal.Footer)`
   padding-right: 2rem;
 `;
 
-export default function AddExpenseModal({show, onHide}) {
-  return <ModalContainer show={show} onHide={onHide}>
-  <ModalHeader closeButton>
-    <ModalTitle className="serif">Add new expense</ModalTitle>
-  </ModalHeader>
+function AddExpenseModal({ show, onHide, onCreateExpense }) {
+  const [value, setValue] = useState(0);
+  const [tag, setTag] = useState("Transportation");
+  const [note, setNote] = useState("");
 
-  <ModalBody>
-    <p className="mb-0">Category</p>
-    <ChoiceBar>
-      <ChoiceItem href="" className="active" onClick={evt => evt.preventDefault()}>Transportation</ChoiceItem>
-      <ChoiceItem href="" onClick={evt => evt.preventDefault()}>Food</ChoiceItem>
-      <ChoiceItem href="" onClick={evt => evt.preventDefault()}>Groceries</ChoiceItem>
-      <ChoiceItem href="" onClick={evt => evt.preventDefault()}>More</ChoiceItem>
-    </ChoiceBar>
-    <ExpenseInput title="Cost" name="expense" className="mt-2" />
-  </ModalBody>
+  const updateTag = evt => {
+    evt.preventDefault();
+    setTag(evt.target.innerText);
+  };
 
-  <ModalFooter>
-    <Button className="d-block flex-grow-1">Save changes</Button>
-  </ModalFooter>
-</ModalContainer>
+  return (
+    <ModalContainer show={show} onHide={onHide}>
+      <ModalHeader closeButton>
+        <ModalTitle className="serif">Add new expense</ModalTitle>
+      </ModalHeader>
+
+      <ModalBody>
+        <p className="mb-0">Category</p>
+        <ChoiceBar>
+          <ChoiceItem
+            href=""
+            className={tag === "Transportation" && "active"}
+            onClick={updateTag}
+          >
+            Transportation
+          </ChoiceItem>
+          <ChoiceItem
+            href=""
+            className={tag === "Food" && "active"}
+            onClick={updateTag}
+          >
+            Food
+          </ChoiceItem>
+          <ChoiceItem
+            href=""
+            className={tag === "Groceries" && "active"}
+            onClick={updateTag}
+          >
+            Groceries
+          </ChoiceItem>
+        </ChoiceBar>
+        <ExpenseInput
+          title="Cost"
+          name="expense"
+          className="mt-2"
+          onUpdateExpense={newValue => setValue(newValue)}
+          initialValue={value}
+        />
+      </ModalBody>
+
+      <ModalFooter>
+        <Button
+          className="d-block flex-grow-1"
+          onClick={() => {
+            onCreateExpense({ value, tag, at: new Date().toISOString(), note });
+            onHide();
+          }}
+        >
+          Save changes
+        </Button>
+      </ModalFooter>
+    </ModalContainer>
+  );
 }
+
+const mapStateToProps = () => ({});
+const mapDispatchToProps = dispatch => ({
+  onCreateExpense({ value, tag, at, note }) {
+    dispatch({
+      type: "PERFORMED_ACTION",
+      action: {
+        actionName: "CREATED_EXPENSE",
+        expense: {
+        guid: uuid(),
+        value,
+        tag,
+        at,
+        note
+      }
+      }
+    });
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddExpenseModal);

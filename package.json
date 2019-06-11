@@ -21,7 +21,8 @@
     "reselect": "^4.0.0",
     "styled-components": "^4.3.1",
     "typeface-merriweather": "^0.0.72",
-    "typeface-merriweather-sans": "^0.0.72"
+    "typeface-merriweather-sans": "^0.0.72",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
