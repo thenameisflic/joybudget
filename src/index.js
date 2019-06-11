@@ -4,7 +4,7 @@ import './index.css';
 import './custom.scss';
 import "typeface-merriweather-sans";
 import "typeface-merriweather";
-import App from './App';
+import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
 import "./i18n";

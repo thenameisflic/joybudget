@@ -17,9 +17,10 @@ const FormControl = styled(Form.Control)`
   border-left-width: 0;
 `;
 
-export default function ExpenseInput({title, name, className}) {
+export default function ExpenseInput({title, name, className, initialValue, onUpdateExpense}) {
   const { t } = useTranslation();
-  const [ value, setValue ] = useState('');
+  const [ value, setValue ] = useState(format(initialValue));
+  const [ oldValue, setOldValue ] = useState(format(initialValue));
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -34,20 +35,40 @@ export default function ExpenseInput({title, name, className}) {
       </InputGroup.Prepend>
       <FormControl
         placeholder={numeral(0).format("0,0.00")}
-        value={value}
+        value={format(value)}
         ref={inputRef}
         type="tel"
+        onClick={evt => {
+          evt.target.setSelectionRange(0, evt.target.value.length);
+        }}
         onChange={evt => {
           // if the user deleted a major cent, put the cursor back in the right place
-          let v = String(parseInt(evt.target.value.replace(/\D/g,'')));
-          if (v.length < 3)
-            v = v.padStart(3, '0');
-          const out = v.slice(0, v.length - 2) + '.' + v.slice(v.length - 2, v.length);
-          setValue(out);
+          const newValue = format(evt.target.value);
+          setValue(newValue);
+        }}
+        onBlur={evt => {
+          if (oldValue !== value) {
+            onUpdateExpense(parseFloat(value), parseFloat(oldValue));
+            setOldValue(value);
+          }
         }}
         aria-describedby={name + "inputGroupPrepend"}
         id={name + "Input"}
       />
     </InputGroup>
   </Form.Group>;
+}
+
+function format(v) {
+  if (typeof v === "number") {
+    v = String(v);
+    if (!v.includes("."))
+      v = v + ".00";
+    else if (v.split(".")[1].length === 1)
+      v = v + "0";
+  }
+  v = String(parseFloat(v.replace(/\D/g,'')));
+  if (v.length < 3)
+    v = v.padStart(3, '0');
+  return v.slice(0, v.length - 2) + '.' + v.slice(v.length - 2, v.length);
 }

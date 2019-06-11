@@ -1,11 +1,13 @@
 import React, { Suspense, useState } from "react";
 import Home from "./Home";
+import { Provider } from "react-redux";
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import DailyTracker from "./DailyTracker";
-import Expenses from "./Expenses";
+import Income from "./Income";
 import styled from "styled-components";
 import { Button } from "react-bootstrap";
 import AddExpenseModal from "./AddExpenseModal";
+import store from "../store";
 
 const AppContainer = styled.div`
   display: flex;
@@ -32,7 +34,7 @@ const HeaderContainer = styled.header`
 const HeaderTitle = styled.h5`
   margin-bottom: 0;
 `;
-  
+
 const ContentContainer = styled.div`
   flex: 1;
   height: calc(100% - 60px);
@@ -87,36 +89,44 @@ const AddExpenseButton = styled(Button)`
 `;
 
 function App() {
-  const [ showModal, setShowModal ] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <Router>
-      <AppContainer>
-        <Suspense fallback={<p>Loading...</p>}>
-          <HeaderContainer>
-            <HeaderTitle className="serif text-white">My Personal Budget</HeaderTitle>
-          </HeaderContainer>
-          <ContentContainer>
-            <Route exact path="/" component={Home} />
-            <Route path="/tracker" component={DailyTracker} />
-            <Route path="/expenses" component={Expenses} />
-          </ContentContainer>
-          <TabsContainer>
-            <AddExpenseButton onClick={() => setShowModal(true)}>Add new expense</AddExpenseButton>
-            <Tabs>
-              <Tab exact to="/">
-                Home
-              </Tab>
-              <Tab to="/tracker">Tracker</Tab>
-              <Tab to="/expenses">Expenses</Tab>
-            </Tabs>
-          </TabsContainer>
-          <AddExpenseModal show={showModal} onHide={() => {
-            setShowModal(false);
-            console.log("hide addexpensemodal");
-          }} />
-        </Suspense>
-      </AppContainer>
+      <Provider store={store}>
+        <AppContainer>
+          <Suspense fallback={<p>Loading...</p>}>
+            <HeaderContainer>
+              <HeaderTitle className="serif text-white">
+                My Personal Budget
+              </HeaderTitle>
+            </HeaderContainer>
+            <ContentContainer>
+              <Route exact path="/" component={Home} />
+              <Route path="/tracker" component={DailyTracker} />
+              <Route path="/expenses" component={Income} />
+            </ContentContainer>
+            <TabsContainer>
+              <AddExpenseButton onClick={() => setShowModal(true)}>
+                Add new expense
+              </AddExpenseButton>
+              <Tabs>
+                <Tab exact to="/">
+                  Home
+                </Tab>
+                <Tab to="/tracker">Tracker</Tab>
+                <Tab to="/expenses">Income</Tab>
+              </Tabs>
+            </TabsContainer>
+            <AddExpenseModal
+              show={showModal}
+              onHide={() => {
+                setShowModal(false);
+              }}
+            />
+          </Suspense>
+        </AppContainer>
+      </Provider>
     </Router>
   );
 }
