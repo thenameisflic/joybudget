@@ -2,6 +2,12 @@ const initialRecurringExpenses = {
   updatedAt: "2019-06-11 14:22:00",
   data: [
     {
+      name: "mainIncome",
+      label: "",
+      value: 0.0,
+      category: "Income",
+    },
+    {
       name: "phone",
       label: "Phone",
       value: 0.0,

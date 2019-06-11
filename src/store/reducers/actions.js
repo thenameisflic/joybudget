@@ -3,8 +3,8 @@ const initialActions = [
     actionName: "UPDATED_RECURRING_EXPENSE",
     recurringExpense: {
       name: "phone",
-      oldValue: 18.0,
-      newValue: 40.0,
+      oldValue: -18.0,
+      newValue: -40.0,
       at: "2019-06-11 14:22"
     }
   },

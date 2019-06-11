@@ -17,7 +17,7 @@ const FormControl = styled(Form.Control)`
   border-left-width: 0;
 `;
 
-export default function ExpenseInput({title, name, className, initialValue, onUpdateExpense}) {
+export default function ExpenseInput({title, name, className, initialValue, onUpdateExpense, isIncome}) {
   const { t } = useTranslation();
   const [ value, setValue ] = useState(format(initialValue));
   const [ oldValue, setOldValue ] = useState(format(initialValue));
@@ -48,7 +48,7 @@ export default function ExpenseInput({title, name, className, initialValue, onUp
         }}
         onBlur={evt => {
           if (oldValue !== value) {
-            onUpdateExpense(parseFloat(value), parseFloat(oldValue));
+            onUpdateExpense(parseFloat(value) * (isIncome ? 1 : -1), parseFloat(oldValue) * (isIncome ? 1 : -1));
             setOldValue(value);
           }
         }}

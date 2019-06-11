@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Form } from "react-bootstrap";
 import ExpenseInput from "./ExpenseInput";
-import IncomeInput from "./IncomeInput";
 import { connect } from "react-redux";
 import { recurringExpenses } from "../store/selectors";
 
@@ -23,35 +22,52 @@ const StickyHeader = styled.h5`
 `;
 
 function Income({ recurringExpenses, onUpdateExpense }) {
-  
   return (
     <Container>
       <h2 className="serif mb-0">Income</h2>
       <Form>
-        <IncomeInput title="" name="income" />
+        {renderExpenses(
+          recurringExpenses.data.filter(p => p.category === "Income"),
+          onUpdateExpense
+        )}
       </Form>
       <h2 className="serif mt-5">Expenses</h2>
       <Form>
-        {
-          getCategories(recurringExpenses.data).map(categoryName => <div key={categoryName}><StickyHeader>{categoryName}</StickyHeader>{recurringExpenses.data.filter(e => e.category === categoryName).map(expense => (
-            <ExpenseInput
-              key={expense.name}
-              title={expense.label}
-              name={expense.name}
-              initialValue={expense.value}
-              onUpdateExpense={(newValue, oldValue) =>
-                onUpdateExpense(expense.name, newValue, oldValue)
-              }
-            />
-          ))}</div>)
-        }
+        {getCategories(recurringExpenses.data).filter(c => c !== "Income").map(categoryName => (
+          <div key={categoryName}>
+            <StickyHeader>{categoryName}</StickyHeader>
+            {renderExpenses(
+              recurringExpenses.data
+                .filter(e => e.category === categoryName)
+                .filter(e => e !== "Income"),
+              onUpdateExpense
+            )}
+          </div>
+        ))}
       </Form>
     </Container>
   );
 }
 
+function renderExpenses(expenses, onUpdateExpense) {
+  return expenses.map(expense => (
+    <ExpenseInput
+      key={expense.name}
+      title={expense.label}
+      name={expense.name}
+      initialValue={expense.value}
+      isIncome={expense.category === "Income"}
+      onUpdateExpense={(newValue, oldValue) => 
+        onUpdateExpense(expense, newValue, oldValue)
+      }
+    />
+  ));
+}
+
 function getCategories(expenses) {
-  return expenses.map(r => r.category).filter((v, idx, arr) => arr.indexOf(v) === idx);
+  return expenses
+    .map(r => r.category)
+    .filter((v, idx, arr) => arr.indexOf(v) === idx);
 }
 
 const mapStateToProps = state => {
@@ -62,16 +78,17 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onUpdateExpense: (name, newValue, oldValue) => {
+    onUpdateExpense: ({category, name}, newValue, oldValue) => {
       dispatch({
         type: "PERFORMED_ACTION",
         action: {
           actionName: "UPDATED_RECURRING_EXPENSE",
           recurringExpense: {
             name,
+            category,
             oldValue,
             newValue,
-            at: new Date().getTime()
+            at: new Date().getTime(),
           }
         }
       });
@@ -79,4 +96,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Income);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Income);
