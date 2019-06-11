@@ -11,12 +11,33 @@ const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 920px;
+  max-width: 100%;
+  margin: 0 auto;
+
+  @media (min-width: 1024px) {
+    box-shadow: 12px 0 15px -4px #a9a9a9cc, -12px 0 8px -4px #a9a9a9cc;
+  }
 `;
 
+const HeaderContainer = styled.header`
+  background-color: #706fd3;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+`;
+
+const HeaderTitle = styled.h5`
+  margin-bottom: 0;
+`;
+  
 const ContentContainer = styled.div`
   flex: 1;
   height: calc(100% - 60px);
   overflow-y: scroll;
+  background-color: #fff;
 `;
 
 const TabsContainer = styled.div`
@@ -72,6 +93,9 @@ function App() {
     <Router>
       <AppContainer>
         <Suspense fallback={<p>Loading...</p>}>
+          <HeaderContainer>
+            <HeaderTitle className="serif text-white">My Personal Budget</HeaderTitle>
+          </HeaderContainer>
           <ContentContainer>
             <Route exact path="/" component={Home} />
             <Route path="/tracker" component={DailyTracker} />
@@ -87,7 +111,10 @@ function App() {
               <Tab to="/expenses">Expenses</Tab>
             </Tabs>
           </TabsContainer>
-          <AddExpenseModal show={showModal} onHide={() => setShowModal(false)} />
+          <AddExpenseModal show={showModal} onHide={() => {
+            setShowModal(false);
+            console.log("hide addexpensemodal");
+          }} />
         </Suspense>
       </AppContainer>
     </Router>
