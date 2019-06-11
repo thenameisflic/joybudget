@@ -43,7 +43,7 @@ const ExpenseItem = styled.li`
   justify-content: space-between;
 `;
 
-function DailyTracker({expenses}) {
+function DailyTracker({expenses, onRemoveExpense}) {
   const [ activeTab, setActiveTab ] = useState(window.location.hash);
 
   useEffect(() => {
@@ -71,10 +71,10 @@ function DailyTracker({expenses}) {
           expenses.data.filter((({at}) => areSameDay(tabToDate(activeTab), new Date(at)))).map(e => <ExpenseItem key={e.guid}>
             <div>
               <p className="mb-1">{e.tag} - {numeral(Math.abs(e.value)).format("$0,0.00")}</p>
-              <p>{e.note}</p>
+              <p>{e.note || "No note"}</p>
             </div>
             <div>
-              <h2 className="text-muted"><span>&times;</span></h2>
+              <h2 className="text-muted mb-0" onClick={() => onRemoveExpense(e.guid)}><span>&times;</span></h2>
             </div>
           </ExpenseItem>)
         }
@@ -103,4 +103,18 @@ const mapStateToProps = state => ({
   expenses: expenses(state)
 });
 
-export default connect(mapStateToProps)(DailyTracker);
+const mapDispatchToProps = dispatch => ({
+  onRemoveExpense(guid) {
+    dispatch({
+      type: "PERFORMED_ACTION",
+      action: {
+        actionName: "REMOVED_EXPENSE",
+        expense: {
+          guid
+        }
+      }
+    });
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DailyTracker);

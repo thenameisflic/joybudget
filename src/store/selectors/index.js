@@ -2,7 +2,8 @@ import { createSelector } from "reselect";
 import { areSameMonth, areSameWeek, daysInMonth, areSameDay } from "../../utils";
 
 const expensesSelector = state => state.expenses;
-const expensesActionsSelector = state => state.actions.filter(a => a.actionName === "CREATED_EXPENSE");
+const createdExpenseActionsSelector = state => state.actions.filter(a => a.actionName === "CREATED_EXPENSE");
+const removedExpenseActionsSelector = state => state.actions.filter(a => a.actionName === "REMOVED_EXPENSE");
 const serverRecurringExpensesSelector = state => state.recurringExpenses;
 const recurringExpensesActionsSelector = state => 
   state.actions.filter(a => a.actionName === "UPDATED_RECURRING_EXPENSE");
@@ -22,9 +23,10 @@ export const recurringExpenses = createSelector(
 );
 
 export const expenses = createSelector(
-  [expensesSelector, expensesActionsSelector], (serverExpenses, actions) => {
+  [expensesSelector, createdExpenseActionsSelector, removedExpenseActionsSelector], (serverExpenses, createdActions, removedActions) => {
     let { data } = serverExpenses;
-    data = [...data, ...actions.map(e => e.expense)];
+    const isNotExcluded = e => !removedActions.find(({expense}) => expense.guid === e.guid);
+    data = [...data.filter(isNotExcluded), ...createdActions.map(e => e.expense).filter(isNotExcluded)];
     return {...serverExpenses, data};
   }
 );
