@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './custom.scss';
+import "typeface-merriweather-sans";
+import "typeface-merriweather";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+import "./i18n";
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
