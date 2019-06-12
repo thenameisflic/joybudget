@@ -3,11 +3,12 @@ import styled from "styled-components";
 import Spending from "./Spending";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { PieChart, Pie, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Legend, ResponsiveContainer } from "recharts";
 import {
   monthlySpending,
   weeklySpending,
-  dailySpending
+  dailySpending,
+  expensesBreakdown
 } from "../store/selectors";
 
 const Container = styled.div`
@@ -15,16 +16,14 @@ const Container = styled.div`
   padding-top: 1.5rem;
 `;
 
-const data01 = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-  { name: "Group E", value: 278 },
-  { name: "Group F", value: 189 }
-];
+const colors = ["#ffda79", "#33d9b2", "#34ace0"];
 
-function Home({ monthlySpending, weeklySpending, dailySpending }) {
+function Home({
+  monthlySpending,
+  weeklySpending,
+  dailySpending,
+  expensesBreakdown
+}) {
   const { t } = useTranslation();
   return (
     <Container>
@@ -53,10 +52,18 @@ function Home({ monthlySpending, weeklySpending, dailySpending }) {
           <Pie
             dataKey="value"
             isAnimationActive={false}
-            data={data01}
+            data={expensesBreakdown}
             outerRadius={80}
             fill="#8884d8"
             label
+          />
+          <Legend
+            payload={expensesBreakdown.map((item, idx) => ({
+              id: item.name,
+              type: "circle",
+              color: colors[idx],
+              value: `${item.name} (${(item.value / monthlySpending.current * 100).toFixed(1)}%)`
+            }))}
           />
         </PieChart>
       </ResponsiveContainer>
@@ -67,7 +74,8 @@ function Home({ monthlySpending, weeklySpending, dailySpending }) {
 const mapStateToProps = state => ({
   monthlySpending: monthlySpending(state),
   weeklySpending: weeklySpending(state),
-  dailySpending: dailySpending(state)
+  dailySpending: dailySpending(state),
+  expensesBreakdown: expensesBreakdown(state)
 });
 
 export default connect(mapStateToProps)(Home);

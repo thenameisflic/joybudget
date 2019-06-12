@@ -61,3 +61,18 @@ export const dailySpending = createSelector(
     };
   }
 );
+
+export const expensesBreakdown = createSelector(
+  [expenses], (expenses) => {
+    const colors = ["#ffda79", "#33d9b2", "#34ace0"];
+    const breakdown = expenses.data.filter(d => d.value < 0 && areSameMonth(new Date(), new Date(d.at))).reduce((acc, exp) => {
+      acc[exp.tag] = acc[exp.tag] ? acc[exp.tag] + exp.value : exp.value;
+      return acc;
+    }, {});
+    return Object.entries(breakdown).map(([name, value], idx) => ({
+      name,
+      value: value * -1,
+      fill: colors[idx]
+    }));
+  }
+);

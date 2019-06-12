@@ -23,14 +23,8 @@ const initialActions = [
       guid: "0skm2io3m-0asmd",
       value: -7.0,
       tag: "Transportation",
-      at: "2019-06-11 14:25",
+      at: "2019-06-12 14:25",
       note: "Uber to work"
-    }
-  },
-  {
-    actionName: "REMOVED_EXPENSE",
-    expense: {
-      guid: "0skm2io3m-0asmd"
     }
   }
 ];
