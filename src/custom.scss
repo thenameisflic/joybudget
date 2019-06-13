@@ -7,4 +7,41 @@ $blue:   #706fd3;
 $warning:   #ffb142;
 $danger:    #ff5252;
 
+.react-datepicker {
+  border: none;
+}
+
+.react-datepicker__header {
+  background-color: $blue;
+}
+
+.react-datepicker__current-month {
+  color: #fff;
+}
+
+.react-datepicker__navigation--previous {
+  border-right-color: #fff;
+}
+
+.react-datepicker__navigation--next {
+  border-left-color: #fff;
+}
+
+.react-datepicker__day-name {
+  color: #fff;
+}
+
+.react-datepicker__month {
+  margin: 0;
+  padding: 0.4rem;
+  border: solid 2px #f0f0f0;
+  border-top: none;
+}
+
+.react-datepicker__day--selected {
+  background-color: $blue;
+  color: #fff;
+  font-weight: bold;
+}
+
 @import '~bootstrap/scss/bootstrap.scss';

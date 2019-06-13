@@ -1,3 +1,14 @@
+import { format } from "date-fns";
+
+const locales = {
+  pt: require("date-fns/locale/pt"),
+  en: require("date-fns/locale/en")
+};
+
+export function formatDate(date, formatStr) {
+  return format(date, formatStr, { locale: locales["en"] })
+}
+
 export function daysInMonth (month, year) {
   return new Date(year, month, 0).getDate();
 }

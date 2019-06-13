@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { ChoiceBar, ChoiceItem } from "./DailyTracker";
+import { ChoiceBar, ChoiceButton } from "./DailyTracker";
 import ExpenseInput from "./ExpenseInput";
 import uuid from "uuid/v4";
 
@@ -58,7 +58,7 @@ const ModalFooter = styled(Modal.Footer)`
 function AddExpenseModal({ show, onHide, onCreateExpense }) {
   const [value, setValue] = useState(0);
   const [tag, setTag] = useState("Transportation");
-  const [note, setNote] = useState("");
+  const [note] = useState("");
 
   const updateTag = evt => {
     evt.preventDefault();
@@ -74,27 +74,30 @@ function AddExpenseModal({ show, onHide, onCreateExpense }) {
       <ModalBody>
         <p className="mb-0">Category</p>
         <ChoiceBar>
-          <ChoiceItem
+          <ChoiceButton
             href=""
             className={tag === "Transportation" && "active"}
             onClick={updateTag}
+            variant="link"
           >
             Transportation
-          </ChoiceItem>
-          <ChoiceItem
+          </ChoiceButton>
+          <ChoiceButton
             href=""
             className={tag === "Food" && "active"}
             onClick={updateTag}
+            variant="link"
           >
             Food
-          </ChoiceItem>
-          <ChoiceItem
+          </ChoiceButton>
+          <ChoiceButton
             href=""
             className={tag === "Groceries" && "active"}
             onClick={updateTag}
+            variant="link"
           >
             Groceries
-          </ChoiceItem>
+          </ChoiceButton>
         </ChoiceBar>
         <ExpenseInput
           title="Cost"

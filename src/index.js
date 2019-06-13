@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import './custom.scss';
 import "typeface-merriweather-sans";
 import "typeface-merriweather";
