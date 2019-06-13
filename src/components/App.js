@@ -1,13 +1,14 @@
 import React, { Suspense, useState } from "react";
 import Home from "./Home";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import DailyTracker from "./DailyTracker";
 import Income from "./Income";
 import styled from "styled-components";
 import { Button } from "react-bootstrap";
 import AddExpenseModal from "./AddExpenseModal";
-import store from "../store";
+import store, { persistor } from "../store";
 
 const AppContainer = styled.div`
   display: flex;
@@ -95,36 +96,38 @@ function App() {
     <Router>
       <Provider store={store}>
         <AppContainer>
-          <Suspense fallback={<p>Loading...</p>}>
-            <HeaderContainer>
-              <HeaderTitle className="serif text-white">
-                My Personal Budget
-              </HeaderTitle>
-            </HeaderContainer>
-            <ContentContainer>
-              <Route exact path="/" component={Home} />
-              <Route path="/tracker" component={DailyTracker} />
-              <Route path="/expenses" component={Income} />
-            </ContentContainer>
-            <TabsContainer>
-              <AddExpenseButton onClick={() => setShowModal(true)}>
-                Add new expense
-              </AddExpenseButton>
-              <Tabs>
-                <Tab exact to="/">
-                  Home
-                </Tab>
-                <Tab to="/tracker">Tracker</Tab>
-                <Tab to="/expenses">Income</Tab>
-              </Tabs>
-            </TabsContainer>
-            <AddExpenseModal
-              show={showModal}
-              onHide={() => {
-                setShowModal(false);
-              }}
-            />
-          </Suspense>
+          <PersistGate loading={null} persistor={persistor}>
+            <Suspense fallback={<p>Loading...</p>}>
+              <HeaderContainer>
+                <HeaderTitle className="serif text-white">
+                  Your Personal Budget
+                </HeaderTitle>
+              </HeaderContainer>
+              <ContentContainer>
+                <Route exact path="/" component={Home} />
+                <Route path="/tracker" component={DailyTracker} />
+                <Route path="/expenses" component={Income} />
+              </ContentContainer>
+              <TabsContainer>
+                <AddExpenseButton onClick={() => setShowModal(true)}>
+                  Add new expense
+                </AddExpenseButton>
+                <Tabs>
+                  <Tab exact to="/">
+                    Home
+                  </Tab>
+                  <Tab to="/tracker">Tracker</Tab>
+                  <Tab to="/expenses">Income</Tab>
+                </Tabs>
+              </TabsContainer>
+              <AddExpenseModal
+                show={showModal}
+                onHide={() => {
+                  setShowModal(false);
+                }}
+              />
+            </Suspense>
+          </PersistGate>
         </AppContainer>
       </Provider>
     </Router>
