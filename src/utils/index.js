@@ -5,8 +5,16 @@ const locales = {
   en: require("date-fns/locale/en")
 };
 
+export function sorted(arr, comparator) {
+  return [...arr].sort(comparator);
+}
+
+export function unique(arr) {
+  return arr.filter((v, idx) => arr.indexOf(v) === idx);
+}
+
 export function formatDate(date, formatStr) {
-  return format(date, formatStr, { locale: locales["en"] })
+  return format(date, formatStr, { locale: locales["en"] });
 }
 
 export function daysInMonth (month, year) {

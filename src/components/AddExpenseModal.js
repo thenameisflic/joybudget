@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Dropdown, Form } from "react-bootstrap";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { ChoiceBar, ChoiceButton } from "./DailyTracker";
+import { ChoiceBar, ChoiceButton, ChoiceDropdownToggle } from "./DailyTracker";
 import ExpenseInput from "./ExpenseInput";
 import uuid from "uuid/v4";
+import { format } from "date-fns";
+import { latestTags, expenseValueSuggestions } from "../store/selectors";
+import { sorted } from "../utils";
+import numeral from "numeral";
 
 const ModalContainer = styled(Modal)`
   &.show {
@@ -55,15 +59,69 @@ const ModalFooter = styled(Modal.Footer)`
   padding-right: 2rem;
 `;
 
-function AddExpenseModal({ show, onHide, onCreateExpense }) {
-  const [value, setValue] = useState(0);
-  const [tag, setTag] = useState("Transportation");
-  const [note] = useState("");
+const ScrollableChoiceBar = styled(ChoiceBar)`
+  overflow-x: scroll;
+`;
 
-  const updateTag = evt => {
-    evt.preventDefault();
-    setTag(evt.target.innerText);
+const TagSelectionBar = styled.div`
+  display: flex;
+  position: relative;
+`;
+
+const FixedChoiceButton = styled(ChoiceDropdownToggle)`
+  background: linear-gradient(to right, transparent 1%, var(--light) 15%, var(--light) 25%);
+  border: none;
+  position: absolute;
+  right: 0;
+  padding-left: 2rem;
+  padding-right: 1rem;
+`;
+
+function AddExpenseModal({ show, onHide, onCreateExpense, tags, expenseValueSuggestions }) {
+  const tagSuggestionsLength = 2;
+  const expenseValueSuggestionsLength = 3;
+  const defaultDropdownLabel = "More";
+  const [value, setValue] = useState(0);
+  const [tag, setTag] = useState(tags[0]);
+  const [dropdownLabel, setDropdownLabel] = useState(defaultDropdownLabel);
+  const [isNoteOpen, setNoteOpen] = useState(false);
+  const [note, setNote] = useState("");
+  const [isTagPickerOpen, setTagPickerOpen] = useState(false);
+
+  const updateTag = (tag) => {
+    setTag(tag);
+    if (getSuggestions(tags).includes(tag))
+      setDropdownLabel(defaultDropdownLabel);
   };
+
+  const getSuggestions = (tags) => {
+    let suggestions = tags.slice(0, tagSuggestionsLength);
+    return suggestions;
+  }
+
+  const updateDropdownLabel = tag => {
+    setDropdownLabel(tag);
+    updateTag(tag);
+  }
+
+  const toggleNote = () => {
+    if (!isNoteOpen) {
+      setTimeout(() => {
+        document.querySelector(".modal").scrollTo(0, 999999);
+      }, 200);
+    }
+    setNoteOpen(!isNoteOpen);
+  }
+
+  const getExpenseValueSuggestions = (tag) => {
+    const defaultSuggestions = [-1, -5, -10];
+    let suggestions = expenseValueSuggestions[tag] || [];
+    if (suggestions.length < expenseValueSuggestionsLength) {
+      suggestions = [...suggestions, ...defaultSuggestions.slice(0, expenseValueSuggestionsLength - suggestions.length)];
+    }
+    suggestions = suggestions.slice(0, expenseValueSuggestionsLength).map(v => v * -1);
+    return suggestions;
+  }
 
   return (
     <ModalContainer show={show} onHide={onHide}>
@@ -73,46 +131,65 @@ function AddExpenseModal({ show, onHide, onCreateExpense }) {
 
       <ModalBody>
         <p className="mb-0">Category</p>
-        <ChoiceBar>
-          <ChoiceButton
-            href=""
-            className={tag === "Transportation" && "active"}
-            onClick={updateTag}
-            variant="link"
-          >
-            Transportation
-          </ChoiceButton>
-          <ChoiceButton
-            href=""
-            className={tag === "Food" && "active"}
-            onClick={updateTag}
-            variant="link"
-          >
-            Food
-          </ChoiceButton>
-          <ChoiceButton
-            href=""
-            className={tag === "Groceries" && "active"}
-            onClick={updateTag}
-            variant="link"
-          >
-            Groceries
-          </ChoiceButton>
-        </ChoiceBar>
+        <TagSelectionBar>
+          <ScrollableChoiceBar>
+            {getSuggestions(tags).map((t, idx) => (
+              <ChoiceButton
+                key={idx}
+                className={tag === t && "active"}
+                style={{paddingRight: idx === tagSuggestionsLength - 1 && "8rem"}}
+                onClick={() => updateTag(t)}
+                variant="link"
+              >
+                {t}
+              </ChoiceButton>
+            ))}
+          </ScrollableChoiceBar>
+          <Dropdown show={isTagPickerOpen} onToggle={() => setTagPickerOpen(!isTagPickerOpen)}>
+            <FixedChoiceButton
+              variant="link"
+              className={(isTagPickerOpen || tag === dropdownLabel) && "active"}
+            >
+              {dropdownLabel}
+            </FixedChoiceButton>
+            <Dropdown.Menu>
+              {sorted(tags).map((t, idx) => <Dropdown.Item key={idx} onClick={() => updateDropdownLabel(t)}>{t}</Dropdown.Item>)}
+            </Dropdown.Menu>
+          </Dropdown>
+        </TagSelectionBar>
         <ExpenseInput
-          title="Cost"
+          renderLabel={() => <Form.Label className="d-flex">
+            <span>Cost</span>
+            <div className="ml-auto">
+              {
+                getExpenseValueSuggestions(tag).map((v, idx) => <Button key={idx} size="sm" variant="outline-primary" className="ml-1">{numeral(v).format("$0,0.00")}</Button>)
+              }
+            </div>
+          </Form.Label>}
           name="expense"
           className="mt-2"
           onUpdateExpense={newValue => setValue(newValue)}
           initialValue={value}
         />
+        {isNoteOpen && <Form.Group controlId="expenseNote">
+          <Form.Label>Note</Form.Label>
+          <Form.Control as="textarea" rows="3" autoFocus onChange={evt => setNote(evt.target.value)} value={note} />
+        </Form.Group>}
       </ModalBody>
 
       <ModalFooter>
+        <Button variant="outline-primary" className="d-block flex-grow-1" onClick={toggleNote}>
+          {isNoteOpen ? "Remove note" : "Add note"}
+        </Button>
         <Button
           className="d-block flex-grow-1"
           onClick={() => {
-            onCreateExpense({ value, tag, at: new Date().toISOString(), note });
+            onCreateExpense({
+              value,
+              tag,
+              at: format(new Date(), "YYYY-MM-DD HH:mm"),
+              note
+            });
             onHide();
           }}
         >
@@ -123,7 +200,11 @@ function AddExpenseModal({ show, onHide, onCreateExpense }) {
   );
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = state => ({
+  tags: latestTags(state),
+  expenseValueSuggestions: expenseValueSuggestions(state)
+});
+
 const mapDispatchToProps = dispatch => ({
   onCreateExpense({ value, tag, at, note }) {
     dispatch({
@@ -131,12 +212,12 @@ const mapDispatchToProps = dispatch => ({
       action: {
         actionName: "CREATED_EXPENSE",
         expense: {
-        guid: uuid(),
-        value,
-        tag,
-        at,
-        note
-      }
+          guid: uuid(),
+          value,
+          tag,
+          at,
+          note
+        }
       }
     });
   }

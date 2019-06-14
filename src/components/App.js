@@ -100,7 +100,7 @@ function App() {
             <Suspense fallback={<p>Loading...</p>}>
               <HeaderContainer>
                 <HeaderTitle className="serif text-white">
-                  Your Personal Budget
+                  Your Budget
                 </HeaderTitle>
               </HeaderContainer>
               <ContentContainer>

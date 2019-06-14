@@ -4,6 +4,7 @@ import { Form } from "react-bootstrap";
 import ExpenseInput from "./ExpenseInput";
 import { connect } from "react-redux";
 import { recurringExpenses } from "../store/selectors";
+import { format } from "date-fns";
 
 const Container = styled.div`
   padding: 1rem;
@@ -88,7 +89,7 @@ const mapDispatchToProps = dispatch => {
             category,
             oldValue,
             newValue,
-            at: new Date().toISOString(),
+            at: format(new Date(), "YYYY-MM-DD HH:mm"),
           }
         }
       });

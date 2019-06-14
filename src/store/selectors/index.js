@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { areSameMonth, areSameWeek, daysInMonth, areSameDay } from "../../utils";
+import { areSameMonth, areSameWeek, daysInMonth, areSameDay, unique } from "../../utils";
 
 const expensesSelector = state => state.expenses;
 const createdExpenseActionsSelector = state => state.actions.filter(a => a.actionName === "CREATED_EXPENSE");
@@ -76,3 +76,15 @@ export const expensesBreakdown = createSelector(
     }));
   }
 );
+
+const AVAILABLE_TAGS = ["Transportation", "Food", "Groceries", "Meds", "Other"];
+export const latestTags = createSelector([expenses], ({data}) => {
+  return unique([...data.sort((a, b) => a.at < b.at ? 1 : -1).map(e => e.tag), ...AVAILABLE_TAGS]);
+});
+
+export const expenseValueSuggestions = createSelector([expenses], ({data}) => {
+  return data.sort((a, b) => a.at < b.at ? 1 : -1).reduce((acc, exp) => {
+    acc[exp.tag] = acc[exp.tag] ? unique([...acc[exp.tag], exp.value]) : [exp.value];
+    return acc;
+  }, {});
+});

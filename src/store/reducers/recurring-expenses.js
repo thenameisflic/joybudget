@@ -8,6 +8,12 @@ const initialRecurringExpenses = {
       category: "Income",
     },
     {
+      name: "savings",
+      label: "Savings",
+      value: 0.0,
+      category: "Savings"
+    },
+    {
       name: "phone",
       label: "Phone",
       value: 0.0,
