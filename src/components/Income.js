@@ -25,15 +25,13 @@ const StickyHeader = styled.h5`
 function Income({ recurringExpenses, onUpdateExpense }) {
   return (
     <Container>
-      <h2 className="serif mb-0">Income</h2>
       <Form>
+      <h2 className="serif mb-0">Income</h2>
         {renderExpenses(
           recurringExpenses.data.filter(p => p.category === "Income"),
           onUpdateExpense
         )}
-      </Form>
       <h2 className="serif mt-5">Expenses</h2>
-      <Form>
         {getCategories(recurringExpenses.data).filter(c => c !== "Income").map(categoryName => (
           <div key={categoryName}>
             <StickyHeader>{categoryName}</StickyHeader>
