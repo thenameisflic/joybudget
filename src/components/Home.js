@@ -180,7 +180,6 @@ function Home({
                 value,
                 index
               }) => {
-                console.log("handling label?");
                 const RADIAN = Math.PI / 180;
                 // eslint-disable-next-line
                 const radius = 25 + innerRadius + (outerRadius - innerRadius);

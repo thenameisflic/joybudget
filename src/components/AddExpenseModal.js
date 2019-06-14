@@ -61,6 +61,7 @@ const ModalFooter = styled(Modal.Footer)`
 
 const ScrollableChoiceBar = styled(ChoiceBar)`
   overflow-x: scroll;
+  width: 100%;
 `;
 
 const TagSelectionBar = styled.div`
@@ -270,6 +271,7 @@ function AddExpenseModal({
             });
             setNote('');
             setValue(0);
+            setDropdownLabel(defaultDropdownLabel);
             onHide();
           }}
         >
