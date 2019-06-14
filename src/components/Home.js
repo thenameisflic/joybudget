@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Spending from "./Spending";
 import { Dropdown, DropdownButton } from "react-bootstrap";
@@ -11,6 +11,8 @@ import {
   dailySpending,
   expensesBreakdown
 } from "../store/selectors";
+import { CHART_COLORS } from "../constants";
+import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } from "date-fns";
 
 const Container = styled.div`
   padding: 1rem;
@@ -25,8 +27,6 @@ const ChartHeader = styled.div`
   align-items: center;
 `;
 
-const colors = ["#ffda79", "#33d9b2", "#34ace0"];
-
 function Home({
   monthlySpending,
   weeklySpending,
@@ -34,6 +34,13 @@ function Home({
   expensesBreakdown
 }) {
   const { t } = useTranslation();
+  const [ startDate, setStateDate ] = useState(new Date());
+  const [ endDate, setEndDate ] = useState(new Date());
+
+  const getFilteredExpenses = expenses => {
+    return expenses.filter();
+  };
+
   return (
     <Container>
       <h2 className="serif">{t("budgetSummary")}</h2>
@@ -82,7 +89,7 @@ function Home({
             payload={expensesBreakdown.map((item, idx) => ({
               id: item.name,
               type: "circle",
-              color: colors[idx],
+              color: CHART_COLORS[idx],
               value: `${item.name} (${(
                 (item.value / monthlySpending.current) *
                 100

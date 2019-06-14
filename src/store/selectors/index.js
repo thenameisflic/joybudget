@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { areSameMonth, areSameWeek, daysInMonth, areSameDay, unique } from "../../utils";
+import { CHART_COLORS, AVAILABLE_TAGS } from "../../constants";
 
 const expensesSelector = state => state.expenses;
 const createdExpenseActionsSelector = state => state.actions.filter(a => a.actionName === "CREATED_EXPENSE");
@@ -64,7 +65,6 @@ export const dailySpending = createSelector(
 
 export const expensesBreakdown = createSelector(
   [expenses], (expenses) => {
-    const colors = ["#ffda79", "#33d9b2", "#34ace0"];
     const breakdown = expenses.data.filter(d => d.value < 0 && areSameMonth(new Date(), new Date(d.at))).reduce((acc, exp) => {
       acc[exp.tag] = acc[exp.tag] ? acc[exp.tag] + exp.value : exp.value;
       return acc;
@@ -72,12 +72,11 @@ export const expensesBreakdown = createSelector(
     return Object.entries(breakdown).map(([name, value], idx) => ({
       name,
       value: value * -1,
-      fill: colors[idx]
+      fill: CHART_COLORS[idx]
     }));
   }
 );
 
-const AVAILABLE_TAGS = ["Transportation", "Food", "Groceries", "Meds", "Clothing", "Gaming", "Other"];
 export const latestTags = createSelector([expenses], ({data}) => {
   return unique([...data.sort((a, b) => a.at < b.at ? 1 : -1).map(e => e.tag), ...AVAILABLE_TAGS]);
 });
