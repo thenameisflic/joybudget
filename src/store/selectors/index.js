@@ -88,3 +88,10 @@ export const expenseValueSuggestions = createSelector([expenses], ({data}) => {
     return acc;
   }, {});
 });
+
+export const noteSuggestions = createSelector([expenses], ({data}) => {
+  return data.sort((a, b) => a.at < b.at ? 1 : -1).reduce((acc, exp) => {
+    acc[exp.tag] = acc[exp.tag] ? unique([...acc[exp.tag], exp.note]).filter(n => n) : [exp.note];
+    return acc;
+  }, {});
+});

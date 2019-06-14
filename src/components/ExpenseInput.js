@@ -27,6 +27,10 @@ export default function ExpenseInput({title, renderLabel, name, className, initi
     document.querySelector(`#${name}Input`).blur();
   }, [name]);
 
+  useEffect(() => {
+    setValue(format(initialValue));
+  }, [initialValue]);
+
   return <Form.Group className={className}>
     {renderLabel ? renderLabel() : <Form.Label>{title}</Form.Label>}
     <InputGroup>
