@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Spending from "./Spending";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown, DropdownButton, Alert } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { PieChart, Pie, Legend, ResponsiveContainer } from "recharts";
@@ -93,6 +93,9 @@ function Home({
   return (
     <Container>
       <h2 className="serif">{t("budgetSummary")}</h2>
+      {(monthlySpending.max - monthlySpending.recurrent) <= 0 && <Alert variant="warning" className="mt-4">
+        You are spending more than you earn.
+      </Alert>}
       <Spending
         className="mt-4"
         title={t("monthlySpending")}
@@ -103,13 +106,13 @@ function Home({
         className="mt-2"
         title={t("weeklySpending")}
         current={weeklySpending.current}
-        max={weeklySpending.max}
+        max={weeklySpending.max - weeklySpending.recurrent}
       />
       <Spending
         className="mt-2"
         title={t("dailySpending")}
         current={dailySpending.current}
-        max={dailySpending.max}
+        max={dailySpending.max - dailySpending.recurrent}
       />
       <ChartHeader>
         <div>What you spent money on</div>

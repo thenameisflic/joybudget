@@ -3,15 +3,33 @@ import { ProgressBar } from "react-bootstrap";
 import numeral from "numeral";
 
 export default function Spending({max, current, title, className}) {
-  const usage = current / max * 100;
-  const overflow = usage - 100;
+  let red = 0;
+  let yellow = 0;
+  let blue = 0;
+  let remainingBalance = max - current;
+  if (remainingBalance > 0) {
+    yellow = current / max * 100;
+    blue = remainingBalance / max * 100;
+  } else {
+    if (max <= 0) {
+      red = 100;
+    } else {
+      if (max * 2 - current <= 0)
+        red = 100;
+      else {
+        red = current / (max * 2) * 100;
+        yellow = (max * 2 - current) / (max * 2) * 100;
+      }
+    }
+  }
+
   return <div className={className}>
     <p className="mb-1">{title}</p>
     <ProgressBar>
-      {overflow > 0 && <ProgressBar now={overflow} variant="danger" />}
-      <ProgressBar now={usage} variant="warning" />
-      {overflow <= 0 && <ProgressBar now={100 - usage} variant="primary" />}
+      <ProgressBar now={red} variant="danger" />
+      <ProgressBar now={yellow} variant="warning" />
+      <ProgressBar now={blue} variant="primary" />
     </ProgressBar>
-    <p className="text-right mt-1 mb-0">{numeral(current).format("$0,0.00")} / {numeral(max).format("$0,0.00")}</p>
+    <p className="text-right mt-1 mb-0">{numeral(current).format("$0,0.00")}{ max > 0 ? " / " +numeral(max).format("$0,0.00") : ""}</p>
   </div>;
 }

@@ -53,11 +53,11 @@ export const weeklySpending = createSelector(
 );
 
 export const dailySpending = createSelector(
-  [monthlySpending, expenses], (dailySpending, expenses) => {
+  [monthlySpending, expenses], (monthlySpending, expenses) => {
     const days = daysInMonth(new Date().getMonth() + 1, new Date().getFullYear());
     return {
-      max: dailySpending.max / days,
-      recurrent: dailySpending.recurrent / days,
+      max: monthlySpending.max / days,
+      recurrent: monthlySpending.recurrent / days,
       current: expenses.data.filter(d => d.value < 0 && areSameDay(new Date(d.at), new Date())).reduce((acc, data) => acc - data.value, 0)
     };
   }
