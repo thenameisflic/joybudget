@@ -83,8 +83,12 @@ const FixedChoiceButton = styled(ChoiceDropdownToggle)`
 `;
 
 const ValueSuggestion = styled(Button)`
-  &::hover {
-    background: #fff;
+  &.active {
+    font-weight: bold;
+  }
+
+  &:focus, &:hover {
+    text-decoration: none;
   }
 `;
 
@@ -133,7 +137,7 @@ function AddExpenseModal({
   };
 
   const getExpenseValueSuggestions = tag => {
-    const defaultSuggestions = [-1, -5, -10];
+    const defaultSuggestions = [1, 5, 10];
     let suggestions = expenseValueSuggestions[tag] || [];
     if (suggestions.length < expenseValueSuggestionsLength) {
       suggestions = [
@@ -146,7 +150,7 @@ function AddExpenseModal({
     }
     suggestions = suggestions
       .slice(0, expenseValueSuggestionsLength)
-      .map(v => v * -1);
+      .map(v => Math.abs(v));
     return suggestions;
   };
 
@@ -206,9 +210,10 @@ function AddExpenseModal({
                   <ValueSuggestion
                     key={idx}
                     size="sm"
-                    variant="outline-primary"
-                    className="ml-1"
-                    onClick={() => setValue(v)}
+                    variant="link"
+                    className={`ml-1 ${v === value && "active"}`}
+                    href="#"
+                    onClick={e => {e.preventDefault(); setValue(-v);}}
                   >
                     {numeral(v).format("$0,0.00")}
                   </ValueSuggestion>
@@ -263,6 +268,9 @@ function AddExpenseModal({
               at: format(new Date(), "YYYY-MM-DD HH:mm"),
               note
             });
+            setNote('');
+            setTag(tags[0]);
+            setValue(0);
             onHide();
           }}
         >

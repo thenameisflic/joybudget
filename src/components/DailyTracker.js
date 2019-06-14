@@ -216,13 +216,13 @@ function DailyTracker({ expenses, onRemoveExpense }) {
                     )
                   }
                 >
-                  Last week
+                  This month
                 </Dropdown.Item>
                 <Dropdown.Item
                   className="text-primary"
                   onClick={() => updateCalendar(startOfMonth(now), now)}
                 >
-                  This month
+                  Last week
                 </Dropdown.Item>
                 <Dropdown.Item
                   className="text-primary"
@@ -292,8 +292,9 @@ function DailyTracker({ expenses, onRemoveExpense }) {
             </div>
           </ExpenseItem>
         ))}
+        {getFilteredExpenses(expenses.data).length === 0 && <p>There are no expenses for this date.</p>}
         <TotalExpenseItemContainer>
-          <TotalExpenseItem>
+          {getFilteredExpenses(expenses.data).length !== 0 && <TotalExpenseItem>
             <p className="ml-3 mb-0 flex-grow-1">Total</p>
             <p className="mb-0">
               {numeral(
@@ -307,6 +308,7 @@ function DailyTracker({ expenses, onRemoveExpense }) {
             </p>
             <TotalAlignmentHelper className="ml-3" />
           </TotalExpenseItem>
+          }
         </TotalExpenseItemContainer>
       </ExpenseList>
     </Container>

@@ -77,7 +77,7 @@ export const expensesBreakdown = createSelector(
   }
 );
 
-const AVAILABLE_TAGS = ["Transportation", "Food", "Groceries", "Meds", "Other"];
+const AVAILABLE_TAGS = ["Transportation", "Food", "Groceries", "Meds", "Clothing", "Gaming", "Other"];
 export const latestTags = createSelector([expenses], ({data}) => {
   return unique([...data.sort((a, b) => a.at < b.at ? 1 : -1).map(e => e.tag), ...AVAILABLE_TAGS]);
 });

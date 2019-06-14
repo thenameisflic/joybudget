@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Spending from "./Spending";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { PieChart, Pie, Legend, ResponsiveContainer } from "recharts";
@@ -14,6 +15,14 @@ import {
 const Container = styled.div`
   padding: 1rem;
   padding-top: 1.5rem;
+`;
+
+const ChartHeader = styled.div`
+  margin-top: 1rem;
+  margin-bottom: .25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const colors = ["#ffda79", "#33d9b2", "#34ace0"];
@@ -46,9 +55,21 @@ function Home({
         current={dailySpending.current}
         max={dailySpending.max}
       />
-      <ResponsiveContainer width="100%" height={250}>
+      <ChartHeader>
+        <div>What you spent money on</div>
+        <div>
+          <DropdownButton id="chart-period-selector" variant="link" title="Today">
+            <Dropdown.Item href="#">Today</Dropdown.Item>
+            <Dropdown.Item href="#">Yesterday</Dropdown.Item>
+            <Dropdown.Item href="#">This week</Dropdown.Item>
+            <Dropdown.Item href="#">This month</Dropdown.Item>
+            <Dropdown.Item href="#">Last week</Dropdown.Item>
+            <Dropdown.Item href="#">Last month</Dropdown.Item>
+          </DropdownButton>
+        </div>
+      </ChartHeader>
+      <ResponsiveContainer width="100%" height={300}>
         <PieChart>
-          *{" "}
           <Pie
             dataKey="value"
             isAnimationActive={false}
@@ -62,7 +83,10 @@ function Home({
               id: item.name,
               type: "circle",
               color: colors[idx],
-              value: `${item.name} (${(item.value / monthlySpending.current * 100).toFixed(1)}%)`
+              value: `${item.name} (${(
+                (item.value / monthlySpending.current) *
+                100
+              ).toFixed(1)}%)`
             }))}
           />
         </PieChart>
