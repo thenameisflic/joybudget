@@ -67,7 +67,8 @@ function Home({
         ),
         expenses: item.expenses.filter(inRange)
       };
-    });
+    })
+    .filter(item => item.value > 0);
     return { expenses: b, total: b.reduce((acc, { value }) => acc + value, 0) };
   };
 
