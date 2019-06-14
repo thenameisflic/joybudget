@@ -12,7 +12,19 @@ import {
   expensesBreakdown
 } from "../store/selectors";
 import { CHART_COLORS } from "../constants";
-import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay } from "date-fns";
+import {
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  isSameDay,
+  parse,
+  isAfter,
+  isBefore,
+  subDays,
+  subWeeks,
+  subMonths
+} from "date-fns";
 
 const Container = styled.div`
   padding: 1rem;
@@ -21,7 +33,7 @@ const Container = styled.div`
 
 const ChartHeader = styled.div`
   margin-top: 1rem;
-  margin-bottom: .25rem;
+  margin-bottom: 0.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,16 +46,60 @@ function Home({
   expensesBreakdown
 }) {
   const { t } = useTranslation();
-  const [ startDate, setStateDate ] = useState(new Date());
-  const [ endDate, setEndDate ] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [dateRangeTitle, setDateRangeTitle] = useState("Today");
 
-  const getFilteredExpenses = expenses => {
-    return expenses.filter();
+  const getFilteredExpenses = breakdown => {
+    const inRange = ({ at }) => {
+      const d = parse(at);
+      return (
+        (isSameDay(d, startDate) || isAfter(d, startDate)) &&
+        (isSameDay(d, endDate) || isBefore(d, endDate))
+      );
+    };
+    const b = breakdown.map(item => {
+      return {
+        ...item,
+        value: Math.abs(
+          item.expenses.filter(inRange).reduce((acc, e) => acc + e.value, 0)
+        ),
+        expenses: item.expenses.filter(inRange)
+      };
+    });
+    return { expenses: b, total: b.reduce((acc, { value }) => acc + value, 0) };
   };
 
+  const updateDateRange = (start, end, evt) => {
+    if (evt) {
+      evt.preventDefault();
+      setDateRangeTitle(evt.target.innerText);
+    }
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const today = new Date();
+  const yesterday = subDays(today, 1);
+  const startOfThisWeek = startOfWeek(today);
+  const startOfPreviousWeek = startOfWeek(subWeeks(today, 1));
+  const endOfPreviousWeek = endOfWeek(startOfPreviousWeek);
+  const startOfThisMonth = startOfMonth(today);
+  const startOfPreviousMonth = startOfMonth(subMonths(today, 1));
+  const endOfPreviousMonth = endOfMonth(startOfPreviousMonth);
+
+  const filtered = getFilteredExpenses(expensesBreakdown);
   return (
     <Container>
       <h2 className="serif">{t("budgetSummary")}</h2>
+      <div>
+        {JSON.stringify(
+          filtered.expenses.map(n => ({
+            name: n.name,
+            value: n.value
+          }))
+        )}
+      </div>
       <Spending
         className="mt-4"
         title={t("monthlySpending")}
@@ -65,39 +121,81 @@ function Home({
       <ChartHeader>
         <div>What you spent money on</div>
         <div>
-          <DropdownButton id="chart-period-selector" variant="link" title="Today">
-            <Dropdown.Item href="#">Today</Dropdown.Item>
-            <Dropdown.Item href="#">Yesterday</Dropdown.Item>
-            <Dropdown.Item href="#">This week</Dropdown.Item>
-            <Dropdown.Item href="#">This month</Dropdown.Item>
-            <Dropdown.Item href="#">Last week</Dropdown.Item>
-            <Dropdown.Item href="#">Last month</Dropdown.Item>
+          <DropdownButton
+            id="chart-period-selector"
+            variant="link"
+            title={dateRangeTitle}
+          >
+            <Dropdown.Item
+              href="#"
+              onClick={e => updateDateRange(today, today, e)}
+            >
+              Today
+            </Dropdown.Item>
+            <Dropdown.Item
+              href="#"
+              onClick={e => updateDateRange(yesterday, yesterday, e)}
+            >
+              Yesterday
+            </Dropdown.Item>
+            <Dropdown.Item
+              href="#"
+              onClick={e => updateDateRange(startOfThisWeek, today, e)}
+            >
+              This week
+            </Dropdown.Item>
+            <Dropdown.Item
+              href="#"
+              onClick={e => updateDateRange(startOfThisMonth, today, e)}
+            >
+              This month
+            </Dropdown.Item>
+            <Dropdown.Item
+              href="#"
+              onClick={e =>
+                updateDateRange(startOfPreviousWeek, endOfPreviousWeek, e)
+              }
+            >
+              Last week
+            </Dropdown.Item>
+            <Dropdown.Item
+              href="#"
+              onClick={e =>
+                updateDateRange(startOfPreviousMonth, endOfPreviousMonth, e)
+              }
+            >
+              Last month
+            </Dropdown.Item>
           </DropdownButton>
         </div>
       </ChartHeader>
-      <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
-          <Pie
-            dataKey="value"
-            isAnimationActive={false}
-            data={expensesBreakdown}
-            outerRadius={80}
-            fill="#8884d8"
-            label
-          />
-          <Legend
-            payload={expensesBreakdown.map((item, idx) => ({
-              id: item.name,
-              type: "circle",
-              color: CHART_COLORS[idx],
-              value: `${item.name} (${(
-                (item.value / monthlySpending.current) *
-                100
-              ).toFixed(1)}%)`
-            }))}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+      {filtered.total === 0 && <p className="text-center d-flex align-items-center justify-content-center" style={{height: "350px"}}>You don't have any expenses for this period.</p>}
+      {filtered.total !== 0 && <ResponsiveContainer width="100%" height={350}>
+          <PieChart>
+            <Pie
+              dataKey="value"
+              isAnimationActive={true}
+              data={filtered.expenses}
+              outerRadius={80}
+              fill="#8884d8"
+              label
+            />
+            <Legend
+              payload={filtered.expenses.map(
+                (item, idx) => ({
+                  id: item.name,
+                  type: "circle",
+                  color: CHART_COLORS[idx],
+                  value: `${item.name} (${(
+                    (item.value /
+                      filtered.total) *
+                    100
+                  ).toFixed(1)}%)`
+                })
+              )}
+            />
+          </PieChart>
+      </ResponsiveContainer>}
     </Container>
   );
 }

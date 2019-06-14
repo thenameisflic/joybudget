@@ -65,14 +65,15 @@ export const dailySpending = createSelector(
 
 export const expensesBreakdown = createSelector(
   [expenses], (expenses) => {
-    const breakdown = expenses.data.filter(d => d.value < 0 && areSameMonth(new Date(), new Date(d.at))).reduce((acc, exp) => {
+    const breakdown = expenses.data.filter(d => d.value < 0).reduce((acc, exp) => {
       acc[exp.tag] = acc[exp.tag] ? acc[exp.tag] + exp.value : exp.value;
       return acc;
     }, {});
     return Object.entries(breakdown).map(([name, value], idx) => ({
       name,
       value: value * -1,
-      fill: CHART_COLORS[idx]
+      fill: CHART_COLORS[idx],
+      expenses: expenses.data.filter(e => e.tag === name)
     }));
   }
 );
