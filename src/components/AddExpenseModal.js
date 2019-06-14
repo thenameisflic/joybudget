@@ -7,7 +7,7 @@ import ExpenseInput from "./ExpenseInput";
 import uuid from "uuid/v4";
 import { format } from "date-fns";
 import { latestTags, expenseValueSuggestions, noteSuggestions } from "../store/selectors";
-import { sorted } from "../utils";
+import { sorted, unique } from "../utils";
 import numeral from "numeral";
 
 const ModalContainer = styled(Modal)`
@@ -151,7 +151,7 @@ function AddExpenseModal({
     suggestions = suggestions
       .slice(0, expenseValueSuggestionsLength)
       .map(v => Math.abs(v));
-    return suggestions;
+    return unique(suggestions);
   };
 
   const getNoteSuggestions = tag => {
@@ -269,7 +269,6 @@ function AddExpenseModal({
               note
             });
             setNote('');
-            setTag(tags[0]);
             setValue(0);
             onHide();
           }}

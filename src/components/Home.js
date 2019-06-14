@@ -11,6 +11,7 @@ import {
   dailySpending,
   expensesBreakdown
 } from "../store/selectors";
+import numeral from "numeral";
 import { CHART_COLORS } from "../constants";
 import {
   startOfWeek,
@@ -92,14 +93,6 @@ function Home({
   return (
     <Container>
       <h2 className="serif">{t("budgetSummary")}</h2>
-      <div>
-        {JSON.stringify(
-          filtered.expenses.map(n => ({
-            name: n.name,
-            value: n.value
-          }))
-        )}
-      </div>
       <Spending
         className="mt-4"
         title={t("monthlySpending")}
@@ -178,7 +171,36 @@ function Home({
               data={filtered.expenses}
               outerRadius={80}
               fill="#8884d8"
-              label
+              label={({
+                cx,
+                cy,
+                midAngle,
+                innerRadius,
+                outerRadius,
+                value,
+                index
+              }) => {
+                console.log("handling label?");
+                const RADIAN = Math.PI / 180;
+                // eslint-disable-next-line
+                const radius = 25 + innerRadius + (outerRadius - innerRadius);
+                // eslint-disable-next-line
+                const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                // eslint-disable-next-line
+                const y = cy + radius * Math.sin(-midAngle * RADIAN);
+      
+                return (
+                  <text
+                    x={x}
+                    y={y}
+                    fill={filtered.expenses[index].fill}
+                    textAnchor={x > cx ? "start" : "end"}
+                    dominantBaseline="central"
+                  >
+                    {numeral(value).format("$0,0.00")}
+                  </text>
+                );
+              }}
             />
             <Legend
               payload={filtered.expenses.map(
