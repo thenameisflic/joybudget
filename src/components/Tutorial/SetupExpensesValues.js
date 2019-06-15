@@ -11,7 +11,9 @@ function SetupExpensesValues({
   recurringExpenses
 }) {
   return (
-    <>
+    <form onSubmit={() => {
+      onContinue();
+    }}>
       <p className="lead serif text-center mt-4">
         We're gonna need just a few more details.
       </p>
@@ -34,13 +36,13 @@ function SetupExpensesValues({
           />
         ))}
       </div>
-      <Button variant="primary" onClick={onContinue}>
+      <Button type="submit" variant="primary" onClick={onContinue} block>
         Continue
       </Button>
       <p className="serif text-center mt-3 mb-4">
         You can change all your info later.
       </p>
-    </>
+    </form>
   );
 }
 
