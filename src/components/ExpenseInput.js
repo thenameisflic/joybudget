@@ -17,7 +17,7 @@ const FormControl = styled(Form.Control)`
   border-left-width: 0;
 `;
 
-export default function ExpenseInput({title, renderLabel, name, className, initialValue, onUpdateExpense, isIncome}) {
+export default function ExpenseInput({title, renderLabel, name, className, initialValue, onUpdateExpense, isIncome, onFocus}) {
   const { t } = useTranslation();
   const [ value, setValue ] = useState(format(initialValue));
   const [ oldValue, setOldValue ] = useState(format(initialValue));
@@ -56,6 +56,7 @@ export default function ExpenseInput({title, renderLabel, name, className, initi
             setOldValue(value);
           }
         }}
+        onFocus={onFocus}
         aria-describedby={name + "inputGroupPrepend"}
         id={name + "Input"}
       />

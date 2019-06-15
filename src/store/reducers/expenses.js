@@ -1,14 +1,8 @@
+import { format } from "date-fns";
+
 const initialExpenses = {
-  updatedAt: "2019-06-11 14:22:00",
-  data: [
-    {
-      guid: "masd0990129031m2",
-      tag: "Food",
-      value: -35.0,
-      at: "2019-06-10 15:25",
-      note: "Lunch at Burger King with Aefe"
-    }
-  ]
+  updatedAt: format(new Date(), "YYYY-MM-DD HH:mm"),
+  data: []
 };
 
 const expenses = (state = initialExpenses, action) => {

@@ -9,6 +9,67 @@ import styled from "styled-components";
 import { Button } from "react-bootstrap";
 import AddExpenseModal from "./AddExpenseModal";
 import store, { persistor } from "../store";
+import Tutorial from "./Tutorial/Tutorial";
+
+function App() {
+  const [showModal, setShowModal] = useState(false);
+  const [isTutorialFinished, setTutorialFinished] = useState(
+    localStorage.getItem("isTutorialFinished") === "true"
+  );
+
+  const onTutorialComplete = () => {
+    localStorage.setItem("isTutorialFinished", "true");
+    setTutorialFinished(true);
+  }
+
+  return (
+    <Router>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Suspense fallback={<p>Loading...</p>}>
+            {!isTutorialFinished && <Tutorial onComplete={onTutorialComplete} />}
+            {isTutorialFinished && (
+              <AppContainer>
+                <HeaderContainer>
+                  <HeaderTitle className="serif text-white">
+                    Your Budget
+                  </HeaderTitle>
+                  <Button variant="outline-light" size="sm" onClick={() => {
+                    localStorage.clear();
+                    window.location.reload();
+                  }}>Clear data &times;</Button>
+                </HeaderContainer>
+                <ContentContainer>
+                  <Route exact path="/" component={Home} />
+                  <Route path="/tracker" component={DailyTracker} />
+                  <Route path="/expenses" component={Income} />
+                </ContentContainer>
+                <TabsContainer>
+                  <AddExpenseButton onClick={() => setShowModal(true)}>
+                    Add new expense
+                  </AddExpenseButton>
+                  <Tabs>
+                    <Tab exact to="/">
+                      Home
+                    </Tab>
+                    <Tab to="/tracker">Tracker</Tab>
+                    <Tab to="/expenses">Income</Tab>
+                  </Tabs>
+                </TabsContainer>
+                <AddExpenseModal
+                  show={showModal}
+                  onHide={() => {
+                    setShowModal(false);
+                  }}
+                />
+              </AppContainer>
+            )}
+          </Suspense>
+        </PersistGate>
+      </Provider>
+    </Router>
+  );
+}
 
 const AppContainer = styled.div`
   display: flex;
@@ -27,6 +88,7 @@ const HeaderContainer = styled.header`
   background-color: #706fd3;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 50px;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -88,50 +150,5 @@ const AddExpenseButton = styled(Button)`
   color: #fff;
   border-radius: 0;
 `;
-
-function App() {
-  const [showModal, setShowModal] = useState(false);
-
-  return (
-    <Router>
-      <Provider store={store}>
-        <AppContainer>
-          <PersistGate loading={null} persistor={persistor}>
-            <Suspense fallback={<p>Loading...</p>}>
-              <HeaderContainer>
-                <HeaderTitle className="serif text-white">
-                  Your Budget
-                </HeaderTitle>
-              </HeaderContainer>
-              <ContentContainer>
-                <Route exact path="/" component={Home} />
-                <Route path="/tracker" component={DailyTracker} />
-                <Route path="/expenses" component={Income} />
-              </ContentContainer>
-              <TabsContainer>
-                <AddExpenseButton onClick={() => setShowModal(true)}>
-                  Add new expense
-                </AddExpenseButton>
-                <Tabs>
-                  <Tab exact to="/">
-                    Home
-                  </Tab>
-                  <Tab to="/tracker">Tracker</Tab>
-                  <Tab to="/expenses">Income</Tab>
-                </Tabs>
-              </TabsContainer>
-              <AddExpenseModal
-                show={showModal}
-                onHide={() => {
-                  setShowModal(false);
-                }}
-              />
-            </Suspense>
-          </PersistGate>
-        </AppContainer>
-      </Provider>
-    </Router>
-  );
-}
 
 export default App;

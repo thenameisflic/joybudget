@@ -1,5 +1,7 @@
+import { format } from "date-fns";
+
 const initialRecurringExpenses = {
-  updatedAt: "2019-06-11 14:22:00",
+  updatedAt: format(new Date(), "YYYY-MM-DD HH:mm"),
   data: [
     {
       name: "mainIncome",
@@ -125,7 +127,12 @@ const initialRecurringExpenses = {
 };
 
 const recurringExpenses = (state = initialRecurringExpenses, action) => {
-  return state;
+  switch (action.type) {
+    case "TOGGLE_EXPENSE_VISIBILITY": 
+      return {...state, data: state.data.map(expense => expense.name === action.expenseName ? {...expense, visible: !expense.visible} : expense)};
+    default:
+      return state;
+  }
 };
 
 export default recurringExpenses;
