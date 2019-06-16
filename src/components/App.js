@@ -6,13 +6,14 @@ import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import DailyTracker from "./DailyTracker";
 import Income from "./Income";
 import styled from "styled-components";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import AddExpenseModal from "./AddExpenseModal";
 import store, { persistor } from "../store";
 import Tutorial from "./Tutorial/Tutorial";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
+  const [onboardStep, setOnboardStep] = useState(0);
   const [isTutorialFinished, setTutorialFinished] = useState(
     localStorage.getItem("isTutorialFinished") === "true"
   );
@@ -40,12 +41,22 @@ function App() {
                   }}>Clear data &times;</Button>
                 </HeaderContainer>
                 <ContentContainer>
-                  <Route exact path="/" component={Home} />
+                  <Route exact path="/" component={() => <Home onboardStep={onboardStep} onContinueOnboard={() => setOnboardStep(onboardStep + 1)} />} />
                   <Route path="/tracker" component={DailyTracker} />
                   <Route path="/expenses" component={Income} />
                 </ContentContainer>
                 <TabsContainer>
-                  <AddExpenseButton onClick={() => setShowModal(true)}>
+                  {onboardStep === 1 && <OnboardHelp2 style={{zIndex: onboardStep === 1 ? 1080 : 0}}>
+                    <OnboardHelp2Title className="serif mt-4">Whenever you buy something, use this button to add it to your budget.</OnboardHelp2Title>
+                    <AddExpenseButton block onClick={() => {
+                      setOnboardStep(onboardStep + 1);
+                      setShowModal(true);
+                    }}>
+                      Add new expense
+                    </AddExpenseButton>
+                    <Button variant="link" className="ml-auto mt-2 mr-2 d-block" onClick={() => setOnboardStep(onboardStep + 1)}>Got it</Button>
+                  </OnboardHelp2>}
+                  <AddExpenseButton block onClick={() => setShowModal(true)}>
                     Add new expense
                   </AddExpenseButton>
                   <Tabs>
@@ -64,6 +75,7 @@ function App() {
                 />
               </AppContainer>
             )}
+            <Modal show={onboardStep < 2} onHide={() => setOnboardStep(onboardStep + 1)}></Modal>
           </Suspense>
         </PersistGate>
       </Provider>
@@ -113,6 +125,7 @@ const TabsContainer = styled.div`
   justify-content: space-around;
   height: 100px;
   background-color: var(--light);
+  position: relative;
 `;
 
 const Tabs = styled.div`
@@ -149,6 +162,25 @@ const AddExpenseButton = styled(Button)`
   flex: 1;
   color: #fff;
   border-radius: 0;
+`;
+
+const OnboardHelp2 = styled.div`
+  position: absolute;
+  width: 100%;
+  background: #fff;
+  top: 0;
+  bottom: 0;
+`;
+
+const OnboardHelp2Title = styled.h5`
+  position: absolute;
+  bottom: 100px;
+  background-color: #fff;
+  margin: 0;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 `;
 
 export default App;

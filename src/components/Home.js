@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Spending from "./Spending";
-import { Dropdown, DropdownButton, Alert } from "react-bootstrap";
+import { Dropdown, DropdownButton, Alert, Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { PieChart, Pie, Legend, ResponsiveContainer } from "recharts";
@@ -27,24 +27,13 @@ import {
   subMonths
 } from "date-fns";
 
-const Container = styled.div`
-  padding: 1rem;
-  padding-top: 1.5rem;
-`;
-
-const ChartHeader = styled.div`
-  margin-top: 1rem;
-  margin-bottom: 0.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
 function Home({
   monthlySpending,
   weeklySpending,
   dailySpending,
-  expensesBreakdown
+  expensesBreakdown,
+  onboardStep,
+  onContinueOnboard
 }) {
   const { t } = useTranslation();
   const [startDate, setStartDate] = useState(new Date());
@@ -59,16 +48,17 @@ function Home({
         (isSameDay(d, endDate) || isBefore(d, endDate))
       );
     };
-    const b = breakdown.map(item => {
-      return {
-        ...item,
-        value: Math.abs(
-          item.expenses.filter(inRange).reduce((acc, e) => acc + e.value, 0)
-        ),
-        expenses: item.expenses.filter(inRange)
-      };
-    })
-    .filter(item => item.value > 0);
+    const b = breakdown
+      .map(item => {
+        return {
+          ...item,
+          value: Math.abs(
+            item.expenses.filter(inRange).reduce((acc, e) => acc + e.value, 0)
+          ),
+          expenses: item.expenses.filter(inRange)
+        };
+      })
+      .filter(item => item.value > 0);
     return { expenses: b, total: b.reduce((acc, { value }) => acc + value, 0) };
   };
 
@@ -91,12 +81,8 @@ function Home({
   const endOfPreviousMonth = endOfMonth(startOfPreviousMonth);
 
   const filtered = getFilteredExpenses(expensesBreakdown);
-  return (
-    <Container>
-      <h2 className="serif">{t("budgetSummary")}</h2>
-      {(monthlySpending.max - monthlySpending.recurrent) <= 0 && <Alert variant="warning" className="mt-4">
-        You are spending more than you earn.
-      </Alert>}
+  const renderSpendingBars = () => (
+    <>
       <Spending
         className="mt-4"
         title={t("monthlySpending")}
@@ -115,6 +101,33 @@ function Home({
         current={dailySpending.current}
         max={dailySpending.max - dailySpending.recurrent}
       />
+    </>
+  );
+  return (
+    <Container>
+      <h2 className="serif">{t("budgetSummary")}</h2>
+      {monthlySpending.max - monthlySpending.recurrent <= 0 && (
+        <Alert variant="warning" className="mt-4">
+          You are spending more than you earn.
+        </Alert>
+      )}
+      {onboardStep === 0 && <OnboardHelp1 style={{ zIndex: onboardStep === 0 ? 1080 : 0 }}>
+        {renderSpendingBars()}
+          <div>
+            <OnboardHelp1Title className="serif">
+              This is how much you can afford to spend every month, week and day
+              and still stay on top of your budget goals.
+            </OnboardHelp1Title>
+            <Button
+              variant="link"
+              className="ml-auto d-block mt-3 mb-2"
+              onClick={onContinueOnboard}
+            >
+              Got it
+            </Button>
+          </div>
+      </OnboardHelp1>}
+      {onboardStep !== 0 && renderSpendingBars()}
       <ChartHeader>
         <div>What you spent money on</div>
         <div>
@@ -166,8 +179,16 @@ function Home({
           </DropdownButton>
         </div>
       </ChartHeader>
-      {filtered.total === 0 && <p className="text-center d-flex align-items-center justify-content-center" style={{height: "350px"}}>You don't have any expenses for this period.</p>}
-      {filtered.total !== 0 && <ResponsiveContainer width="100%" height={350}>
+      {filtered.total === 0 && (
+        <p
+          className="text-center d-flex align-items-center justify-content-center"
+          style={{ height: "350px" }}
+        >
+          You don't have any expenses for this period.
+        </p>
+      )}
+      {filtered.total !== 0 && (
+        <ResponsiveContainer width="100%" height={350}>
           <PieChart>
             <Pie
               dataKey="value"
@@ -191,7 +212,7 @@ function Home({
                 const x = cx + radius * Math.cos(-midAngle * RADIAN);
                 // eslint-disable-next-line
                 const y = cy + radius * Math.sin(-midAngle * RADIAN);
-      
+
                 return (
                   <text
                     x={x}
@@ -206,24 +227,55 @@ function Home({
               }}
             />
             <Legend
-              payload={filtered.expenses.map(
-                (item, idx) => ({
-                  id: item.name,
-                  type: "circle",
-                  color: CHART_COLORS[idx],
-                  value: `${item.name} (${(
-                    (item.value /
-                      filtered.total) *
-                    100
-                  ).toFixed(1)}%)`
-                })
-              )}
+              payload={filtered.expenses.map((item, idx) => ({
+                id: item.name,
+                type: "circle",
+                color: CHART_COLORS[idx],
+                value: `${item.name} (${(
+                  (item.value / filtered.total) *
+                  100
+                ).toFixed(1)}%)`
+              }))}
             />
           </PieChart>
-      </ResponsiveContainer>}
+        </ResponsiveContainer>
+      )}
     </Container>
   );
 }
+
+const Container = styled.div`
+  padding: 1rem;
+  padding-top: 1.5rem;
+`;
+
+const ChartHeader = styled.div`
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const OnboardHelp1 = styled.div`
+  position: absolute;
+  background: #fff;
+  left: 0;
+  width: calc(100%);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0;
+`;
+
+const OnboardHelp1Title = styled.h5`
+  position: absolute;
+  bottom: 310px;
+  background: #fff;
+  left: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+`;
 
 const mapStateToProps = state => ({
   monthlySpending: monthlySpending(state),

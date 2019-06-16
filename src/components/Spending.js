@@ -1,6 +1,7 @@
 import React from "react";
 import { ProgressBar } from "react-bootstrap";
 import numeral from "numeral";
+import styled from "styled-components";
 
 export default function Spending({max, current, title, className}) {
   let red = 0;
@@ -23,7 +24,7 @@ export default function Spending({max, current, title, className}) {
     }
   }
 
-  return <div className={className}>
+  return <Container className={className}>
     <p className="mb-1">{title}</p>
     <ProgressBar>
       <ProgressBar now={red} variant="danger" />
@@ -31,5 +32,7 @@ export default function Spending({max, current, title, className}) {
       <ProgressBar now={blue} variant="primary" />
     </ProgressBar>
     <p className="text-right mt-1 mb-0">{numeral(current).format("$0,0.00")}{ max > 0 ? " / " +numeral(max).format("$0,0.00") : ""}</p>
-  </div>;
+  </Container>;
 }
+
+const Container = styled.div``;
