@@ -8,13 +8,18 @@ export default function Loading({onContinue}) {
   const [ tip, setTip ] = useState("Analyzing your expenses...");
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout1 = setTimeout(() => {
       setTip("Almost there...");
     }, TOTAL_DURATION / 2)
-    setTimeout(() => {
+    const timeout2 = setTimeout(() => {
       onContinue();
-    });
-  });
+    }, TOTAL_DURATION);
+
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+    };
+  }, [onContinue]);
 
   return (
     <>

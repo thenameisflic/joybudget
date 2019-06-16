@@ -28,7 +28,7 @@ function SetupIncome({ income, savings, monthlySpending, onUpdateSavings, onCont
       <div className="flex-grow-1" />
       <ExpenseInput
         initialValue={savings.value}
-        isIncome={true}
+        isIncome={false}
         name={savings.name}
         onUpdateExpense={(newValue, oldValue) =>
           onUpdateSavings(savings, newValue, oldValue)
