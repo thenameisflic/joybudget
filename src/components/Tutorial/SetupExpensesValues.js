@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button } from "react-bootstrap";
+import { Button, Alert } from "react-bootstrap";
 import { recurringExpenses } from "../../store/selectors";
 import { updateRecurringExpense } from "../../store/creators";
 import ExpenseInput from "../ExpenseInput";
@@ -23,6 +23,7 @@ function SetupExpensesValues({
       <h1 className="mt-2 text-center">
         {t("howMuchDoYouSpend")}
       </h1>
+      <Alert variant="primary" className="text-center">{t("tipConsumption")}</Alert>
       <div className="flex-grow-1" />
       <div className="mt-4">
       {recurringExpenses.data

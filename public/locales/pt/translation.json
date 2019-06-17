@@ -1,6 +1,6 @@
 {
   "skipTutorial": "Pular tutorial",
-  "appSlogan": "Planejamento de finanças para pessoas ocupadas",
+  "appSlogan": "Controle de gastos para pessoas ocupadas",
   "tutorialStep0Info": "Planejar suas finanças é a melhor coisa que você pode fazer para o seu bolso. \nNós fazemos isso ser simples e gratuito.",
   "getStarted": "Começar",
   "back": "Voltar",
@@ -13,6 +13,7 @@
   "whichDoYouSpendMoneyOn": "Em quais desses itens você gasta dinheiro todo mês?",
   "needMoreDetails": "Vamos precisar de só mais alguns detalhes.",
   "howMuchDoYouSpend": "Quanto você gasta por mês com cada um desses itens?",
+  "tipConsumption": "Se você estiver na dúvida sobre qualquer um desses, deixe o campo em branco e adicione as compras individuais mais tarde. Ao longo do tempo, você vai aprender sobre o seu perfil de consumo.",
   "lastQuestion": "Última pergunta, nós prometemos.",
   "howMuchPlanningToSave": "Quanto você planeja economizar todo mês?",
   "afterExpensesYouShouldHaveLeft": "Depois de todas as suas despesas, você deve ter {{amount}} restantes.",

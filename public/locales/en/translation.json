@@ -13,6 +13,7 @@
   "whichDoYouSpendMoneyOn": "Which of these do you spend money on?",
   "needMoreDetails": "We're gonna need a few more details.",
   "howMuchDoYouSpend": "How much do you spend per month with each one of these?",
+  "tipConsumption": "If you aren't sure about any of these, leave the field blank and add the individual purchases later. Over time, you'll learn about your consumption profile.",
   "lastQuestion": "Last question, we promise.",
   "howMuchPlanningToSave": "How much are you planning to save each month?",
   "afterExpensesYouShouldHaveLeft": "After all your expenses, you should have {{amount}} left.",
