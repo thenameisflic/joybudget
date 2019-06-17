@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 import { updateRecurringExpense } from "../../store/creators";
 import { monthlySpending } from "../../store/selectors";
 import numeral from "numeral";
+import { blur } from "../../utils";
 
 function SetupIncome({ income, savings, monthlySpending, onUpdateSavings, onContinue }) {
   const formRef = useRef(null);
@@ -20,7 +21,10 @@ function SetupIncome({ income, savings, monthlySpending, onUpdateSavings, onCont
   const remainingBalance = monthlySpending.max - monthlySpending.recurrent;
 
   return (
-    <FormContainer ref={formRef} onSubmit={onContinue}>
+    <FormContainer ref={formRef} onSubmit={() => {
+      blur();
+      onContinue();
+    }}>
       <p className="lead serif text-center mt-4">Last question, we promise.</p>
       <h1 className="serif text-center mt-2">
         How much are you planning to save each month?

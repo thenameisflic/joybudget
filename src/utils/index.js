@@ -48,9 +48,16 @@ function getWeekNumber(d) {
 
 export function withoutKeys(obj, keys) {
   const out = {...obj};
-  Object.keys(out).foreach(key => {
+  Object.keys(out).forEach(key => {
     if (keys.includes(key))
       delete out[key];
   });
   return out;
+}
+
+export function blur() {
+  const tmp = document.createElement("input");
+  document.body.appendChild(tmp);
+  tmp.focus();
+  tmp.remove();
 }

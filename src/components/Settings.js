@@ -28,7 +28,7 @@ function Settings({ expenses }) {
   };
 
   const onClearData = async () => {
-    alert("All your local data was cleared. Taking you back to the home page.");
+    alert("All your local data is gone. Redirecting you to the home page.");
     localStorage.clear();
     window.location.reload();
   }

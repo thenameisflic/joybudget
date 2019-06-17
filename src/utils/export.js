@@ -3,6 +3,7 @@ import { withoutKeys } from "./";
 export function exportCsv(expensesData) {
   return new Promise((resolve) => {
     const lineArray = [];
+    expensesData = expensesData.map(e => ({...e, value: e.value * -1}));
     expensesData.forEach((expense, index) => {
         const line = Object.values(withoutKeys(expense, ["guid"])).join(",");
         lineArray.push(index === 0 ? "data:text/csv;charset=utf-8," + line : line);

@@ -4,6 +4,7 @@ import ExpenseInput from "../ExpenseInput";
 import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
 import { updateRecurringExpense } from "../../store/creators";
+import { blur } from "../../utils";
 
 function SetupIncome({ income, onUpdateIncome, onContinue }) {
   const formRef = useRef(null);
@@ -16,7 +17,10 @@ function SetupIncome({ income, onUpdateIncome, onContinue }) {
   };
 
   return (
-    <FormContainer ref={formRef} onSubmit={onContinue}>
+    <FormContainer ref={formRef} onSubmit={() => {
+      blur();
+      onContinue();
+    }}>
       <p className="lead serif text-center mt-4">Let's get you set up.</p>
       <h1 className="serif text-center mt-2">
         How much do you earn each month?
@@ -26,9 +30,9 @@ function SetupIncome({ income, onUpdateIncome, onContinue }) {
         initialValue={income.value}
         isIncome={true}
         name={income.name}
-        onUpdateExpense={(newValue, oldValue) =>
+        onUpdateExpense={(newValue, oldValue) => {
           onUpdateIncome(income, newValue, oldValue)
-        }
+        }}
         onFocus={scrollBottom}
       />
       <p className="serif text-center mt-0">
