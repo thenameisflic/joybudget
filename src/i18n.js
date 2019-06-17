@@ -31,7 +31,8 @@ i18n
   .then(() => {
     if (i18n.language === 'pt')
       numeral.locale('pt-br');
-    else numeral.locale(i18n.language);
+    else
+      numeral.locale('en');
   });
 
 export default i18n;
