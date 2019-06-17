@@ -120,6 +120,10 @@ function DailyTracker({ expenses, onRemoveExpense }) {
   const [isPickingRange, setPickingRange] = useState(false);
 
   useEffect(() => {
+    document.title = "Tracker - Joybudget";
+  });
+
+  useEffect(() => {
     if (window.location.hash === "") window.location.hash = "#today";
     setActiveTab(window.location.hash.split("#")[1]);
   }, []);

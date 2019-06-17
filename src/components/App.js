@@ -17,6 +17,7 @@ function App() {
   const [onboardStep, setOnboardStep] = useState(
     localStorage.getItem("onboardStep") || 0
   );
+
   const [isTutorialFinished, setTutorialFinished] = useState(
     localStorage.getItem("isTutorialFinished") === "true"
   );

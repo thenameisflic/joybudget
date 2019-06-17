@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Spending from "./Spending";
 import { Dropdown, DropdownButton, Alert, Button } from "react-bootstrap";
@@ -39,6 +39,10 @@ function Home({
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [dateRangeTitle, setDateRangeTitle] = useState("Today");
+
+  useEffect(() => {
+    document.title = "Budget - Joybudget";
+  });
 
   const getFilteredExpenses = breakdown => {
     const inRange = ({ at }) => {

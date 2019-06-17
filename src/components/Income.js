@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Form } from "react-bootstrap";
 import ExpenseInput from "./ExpenseInput";
@@ -23,6 +23,10 @@ const StickyHeader = styled.h5`
 `;
 
 function Income({ recurringExpenses, onUpdateExpense, categories }) {
+  useEffect(() => {
+    document.title = "Income and Expenses - Joybudget";
+  });
+
   return (
     <Container>
       <Form>
