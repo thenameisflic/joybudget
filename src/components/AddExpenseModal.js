@@ -10,7 +10,7 @@ import { latestTags, expenseValueSuggestions, noteSuggestions } from "../store/s
 import { sorted, unique } from "../utils";
 import numeral from "numeral";
 
-const ModalContainer = styled(Modal)`
+export const ModalContainer = styled(Modal)`
   &.show {
     display: block;
   }
@@ -38,22 +38,22 @@ const ModalContainer = styled(Modal)`
   }
 `;
 
-const ModalTitle = styled(Modal.Title)`
+export const ModalTitle = styled(Modal.Title)`
   font-size: 1.25rem;
 `;
 
-const ModalBody = styled(Modal.Body)`
+export const ModalBody = styled(Modal.Body)`
   padding-left: 2rem;
   padding-right: 2rem;
 `;
 
-const ModalHeader = styled(Modal.Header)`
+export const ModalHeader = styled(Modal.Header)`
   border-bottom: 0;
   padding: 2rem;
   padding-bottom: 0;
 `;
 
-const ModalFooter = styled(Modal.Footer)`
+export const ModalFooter = styled(Modal.Footer)`
   border-top: 0;
   padding-left: 2rem;
   padding-right: 2rem;

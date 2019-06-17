@@ -45,3 +45,12 @@ function getWeekNumber(d) {
   var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
   return weekNo;
 }
+
+export function withoutKeys(obj, keys) {
+  const out = {...obj};
+  Object.keys(out).foreach(key => {
+    if (keys.includes(key))
+      delete out[key];
+  });
+  return out;
+}

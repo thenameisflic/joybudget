@@ -10,10 +10,13 @@ import { Button, Modal } from "react-bootstrap";
 import AddExpenseModal from "./AddExpenseModal";
 import store, { persistor } from "../store";
 import Tutorial from "./Tutorial/Tutorial";
+import SettingsButton from "./Settings";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
-  const [onboardStep, setOnboardStep] = useState(0);
+  const [onboardStep, setOnboardStep] = useState(
+    localStorage.getItem("onboardStep") || 0
+  );
   const [isTutorialFinished, setTutorialFinished] = useState(
     localStorage.getItem("isTutorialFinished") === "true"
   );
@@ -21,41 +24,70 @@ function App() {
   const onTutorialComplete = () => {
     localStorage.setItem("isTutorialFinished", "true");
     setTutorialFinished(true);
-  }
+  };
+
+  const onContinueOnboard = () => {
+    localStorage.setItem("onboardStep", onboardStep + 1);
+    setOnboardStep(onboardStep + 1);
+  };
 
   return (
     <Router>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Suspense fallback={<p>Loading...</p>}>
-            {!isTutorialFinished && <Tutorial onComplete={onTutorialComplete} />}
+            {!isTutorialFinished && (
+              <Tutorial onComplete={onTutorialComplete} />
+            )}
             {isTutorialFinished && (
               <AppContainer>
                 <HeaderContainer>
                   <HeaderTitle className="serif text-white">
                     Your Budget
                   </HeaderTitle>
-                  <Button variant="outline-light" size="sm" onClick={() => {
-                    localStorage.clear();
-                    window.location.reload();
-                  }}>Clear data &times;</Button>
+                  <SettingsButton />
                 </HeaderContainer>
                 <ContentContainer>
-                  <Route exact path="/" component={() => <Home onboardStep={onboardStep} onContinueOnboard={() => setOnboardStep(onboardStep + 1)} />} />
+                  <Route
+                    exact
+                    path="/"
+                    component={() => (
+                      <Home
+                        onboardStep={onboardStep}
+                        onContinueOnboard={onContinueOnboard}
+                      />
+                    )}
+                  />
                   <Route path="/tracker" component={DailyTracker} />
                   <Route path="/expenses" component={Income} />
                 </ContentContainer>
                 <TabsContainer>
-                  {onboardStep === 1 && <OnboardHelp2 style={{zIndex: onboardStep === 1 ? 1080 : 0}}>
-                    <OnboardHelp2Title className="serif mt-4">Whenever you buy something, use this button to add it to your budget.</OnboardHelp2Title>
-                    <AddExpenseButton block onClick={() => {
-                      setOnboardStep(onboardStep + 1);
-                      setShowModal(true);
-                    }}>
-                      Add new expense
-                    </AddExpenseButton>
-                    <Button variant="link" className="ml-auto mt-2 mr-2 d-block" onClick={() => setOnboardStep(onboardStep + 1)}>Got it</Button>
-                  </OnboardHelp2>}
+                  {onboardStep === 1 && (
+                    <OnboardHelp2
+                      style={{ zIndex: onboardStep === 1 ? 1080 : 0 }}
+                    >
+                      <OnboardHelp2Title className="serif mt-4">
+                        Whenever you buy something, use this button to add it to
+                        your budget.
+                      </OnboardHelp2Title>
+                      <AddExpenseButton
+                        block
+                        onClick={() => {
+                          onContinueOnboard();
+                          setShowModal(true);
+                        }}
+                      >
+                        Add new expense
+                      </AddExpenseButton>
+                      <Button
+                        variant="link"
+                        className="ml-auto mt-2 mr-2 d-block"
+                        onClick={onContinueOnboard}
+                      >
+                        Got it
+                      </Button>
+                    </OnboardHelp2>
+                  )}
                   <AddExpenseButton block onClick={() => setShowModal(true)}>
                     Add new expense
                   </AddExpenseButton>
@@ -75,7 +107,7 @@ function App() {
                 />
               </AppContainer>
             )}
-            <Modal show={onboardStep < 2} onHide={() => setOnboardStep(onboardStep + 1)}></Modal>
+            <Modal show={onboardStep < 2 && isTutorialFinished} onHide={onContinueOnboard} />
           </Suspense>
         </PersistGate>
       </Provider>
@@ -90,6 +122,7 @@ const AppContainer = styled.div`
   width: 920px;
   max-width: 100%;
   margin: 0 auto;
+  position: relative;
 
   @media (min-width: 1024px) {
     box-shadow: 12px 0 15px -4px #a9a9a9cc, -12px 0 8px -4px #a9a9a9cc;
@@ -103,7 +136,6 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   height: 50px;
   padding-left: 1rem;
-  padding-right: 1rem;
 `;
 
 const HeaderTitle = styled.h5`
@@ -143,6 +175,10 @@ const Tab = styled(NavLink)`
   text-decoration: none;
   cursor: pointer;
 
+  svg {
+    fill: var(--gray);
+  }
+
   &:focus,
   &:hover {
     text-decoration: none;
@@ -152,6 +188,10 @@ const Tab = styled(NavLink)`
     font-weight: bold;
     color: var(--blue);
     text-decoration: none;
+
+    svg {
+      fill: var(--blue);
+    }
   }
 `;
 
@@ -181,6 +221,7 @@ const OnboardHelp2Title = styled.h5`
   padding-bottom: 1.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
+  width: 100%;
 `;
 
 export default App;
