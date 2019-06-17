@@ -8,9 +8,11 @@ import SetupExpensesVisibility from "./SetupExpensesVisibility";
 import SetupExpensesValues from "./SetupExpensesValues";
 import SetupSavings from "./SetupSavings";
 import Loading from "./Loading";
+import { useTranslation } from "react-i18next";
 
 export default function Tutorial({ onComplete }) {
   const [currentStep, setCurrentStep] = useState(0);
+  const { t } = useTranslation();
   const steps = [
     Intro,
     SetupIncome,
@@ -27,7 +29,7 @@ export default function Tutorial({ onComplete }) {
         <Logo src={logoText} alt="Joybudget Logo" />
         {currentStep === 0 && (
           <Button variant="link" onClick={() => onComplete()}>
-            Skip tutorial
+            {t("skipTutorial")}
           </Button>
         )}
         {currentStep !== 0 && (
@@ -35,7 +37,7 @@ export default function Tutorial({ onComplete }) {
             variant="link"
             onClick={() => setCurrentStep(currentStep - 1)}
           >
-            Back
+            {t("back")}
           </Button>
         )}
       </TutorialHeader>

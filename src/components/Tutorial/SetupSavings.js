@@ -7,9 +7,11 @@ import { updateRecurringExpense } from "../../store/creators";
 import { monthlySpending } from "../../store/selectors";
 import numeral from "numeral";
 import { blur } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 function SetupIncome({ income, savings, monthlySpending, onUpdateSavings, onContinue }) {
   const formRef = useRef(null);
+  const { t } = useTranslation();
 
   const scrollBottom = () => {
     setTimeout(() => {
@@ -25,9 +27,9 @@ function SetupIncome({ income, savings, monthlySpending, onUpdateSavings, onCont
       blur();
       onContinue();
     }}>
-      <p className="lead serif text-center mt-4">Last question, we promise.</p>
+      <p className="lead serif text-center mt-4">{t("lastQuestion")}</p>
       <h1 className="serif text-center mt-2">
-        How much are you planning to save each month?
+        {t("howMuchPlanningToSave")}
       </h1>
       <div className="flex-grow-1" />
       <ExpenseInput
@@ -42,10 +44,10 @@ function SetupIncome({ income, savings, monthlySpending, onUpdateSavings, onCont
       {
         remainingBalance > 0 && <>
            <p className="serif text-center mt-0">
-            After all of your expenses, you should have {numeral(remainingBalance).format("$0,0.00")} left.
+            {t("afterExpensesYouShouldHaveLeft", {amount: numeral(remainingBalance).format("$0,0.00")})}
           </p>
           <p className="serif text-center mt-0">
-            We recommend you save at least 20% of your total income (about {numeral(monthlySpending.max * 0.2).format("$0,0.00")}).
+            {t("weRecommendSaving", {amount: numeral(monthlySpending.max * 0.2).format("$0,0.00")})}
           </p>
         </>
       }
@@ -56,10 +58,10 @@ function SetupIncome({ income, savings, monthlySpending, onUpdateSavings, onCont
         remainingBalance === 0 && <p className="serif text-center mt-0">You don't have any money left after all your expenses.</p>
       }
       <Button variant="primary" onClick={onContinue}>
-        Continue
+        {t("continue")}
       </Button>
       <p className="serif text-center mt-3 mb-4">
-        You can change all your info later.
+        {t("youCanChangeAllYourInfoLater")}
       </p>
     </FormContainer>
   );

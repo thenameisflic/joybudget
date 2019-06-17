@@ -1,15 +1,18 @@
 import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import preparingCharts from "../../assets/preparing-charts.svg";
+import { useTranslation } from "react-i18next";
 
 const TOTAL_DURATION = 5000;
 
 export default function Loading({onContinue}) {
-  const [ tip, setTip ] = useState("Analyzing your expenses...");
+  const { t } = useTranslation();
+  const almostThere = t("almostThere");
+  const [ tip, setTip ] = useState(t("analyzingYourExpenses"));
 
   useEffect(() => {
     const timeout1 = setTimeout(() => {
-      setTip("Almost there...");
+      setTip(almostThere);
     }, TOTAL_DURATION / 2)
     const timeout2 = setTimeout(() => {
       onContinue();
@@ -19,11 +22,11 @@ export default function Loading({onContinue}) {
       clearTimeout(timeout1);
       clearTimeout(timeout2);
     };
-  }, [onContinue]);
+  }, [onContinue, almostThere]);
 
   return (
     <>
-      <p className="lead serif mt-4 text-center">Great, that's all we needed!</p>
+      <p className="lead serif mt-4 text-center">{t("thatsAllWeNeeded")}</p>
       <div className="flex-grow-1"></div>
       <Illustration src={preparingCharts} />
       <div className="flex-grow-1"></div>

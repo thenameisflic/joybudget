@@ -4,21 +4,24 @@ import { Button } from "react-bootstrap";
 import { recurringExpenses } from "../../store/selectors";
 import { updateRecurringExpense } from "../../store/creators";
 import ExpenseInput from "../ExpenseInput";
+import { useTranslation } from "react-i18next";
 
 function SetupExpensesValues({
   onContinue,
   onUpdateExpense,
   recurringExpenses
 }) {
+  const { t } = useTranslation();
+
   return (
     <form onSubmit={() => {
       onContinue();
     }}>
       <p className="lead serif text-center mt-4">
-        We're gonna need just a few more details.
+        {t("needMoreDetails")}
       </p>
       <h1 className="mt-2 text-center">
-        How much do you spend per month with each one of these?
+        {t("howMuchDoYouSpend")}
       </h1>
       <div className="flex-grow-1" />
       <div className="mt-4">
@@ -37,10 +40,10 @@ function SetupExpensesValues({
         ))}
       </div>
       <Button type="submit" variant="primary" onClick={onContinue} block>
-        Continue
+        {t("continue")}
       </Button>
       <p className="serif text-center mt-3 mb-4">
-        You can change all your info later.
+        {t("youCanChangeAllYourInfoLater")}
       </p>
     </form>
   );

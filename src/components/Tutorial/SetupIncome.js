@@ -5,8 +5,10 @@ import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
 import { updateRecurringExpense } from "../../store/creators";
 import { blur } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 function SetupIncome({ income, onUpdateIncome, onContinue }) {
+  const { t } = useTranslation();
   const formRef = useRef(null);
 
   const scrollBottom = () => {
@@ -21,9 +23,9 @@ function SetupIncome({ income, onUpdateIncome, onContinue }) {
       blur();
       onContinue();
     }}>
-      <p className="lead serif text-center mt-4">Let's get you set up.</p>
+      <p className="lead serif text-center mt-4">{t("letsGetYouSetUp")}</p>
       <h1 className="serif text-center mt-2">
-        How much do you earn each month?
+        {t("howMuchDoYouEarn")}
       </h1>
       <div className="flex-grow-1" />
       <ExpenseInput
@@ -36,14 +38,13 @@ function SetupIncome({ income, onUpdateIncome, onContinue }) {
         onFocus={scrollBottom}
       />
       <p className="serif text-center mt-0">
-        Your data never leaves your device and you can export it whenever you
-        want.
+        {t("yourDataNeverLeavesYourDevice")}
       </p>
       <Button variant="primary" onClick={onContinue}>
-        Continue
+        {t("continue")}
       </Button>
       <p className="serif text-center mt-3 mb-4">
-        You can change all your info later.
+        {t("youCanChangeAllYourInfoLater")}
       </p>
     </FormContainer>
   );

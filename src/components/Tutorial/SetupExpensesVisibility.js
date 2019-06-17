@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { Button } from "react-bootstrap";
 import { categories, recurringExpenses } from "../../store/selectors";
+import { useTranslation } from "react-i18next";
 
 function SetupExpensesVisibility({
   onContinue,
@@ -10,13 +11,14 @@ function SetupExpensesVisibility({
   recurringExpenses,
   onToggleExpenseVisibility
 }) {
+  const { t } = useTranslation();
   return (
     <>
       <p className="lead serif text-center mt-4">
-        Alright, now let's talk about your expenses.
+        {t("letsTalkAboutExpenses")}
       </p>
       <h1 className="mt-2 text-center">
-        Which of these do you spend money on?
+        {t("whichDoYouSpendMoneyOn")}
       </h1>
       <div className="flex-grow-1" />
       <form onSubmit={onContinue}>
@@ -44,11 +46,11 @@ function SetupExpensesVisibility({
             </React.Fragment>
           ))}
         <Button variant="primary" onClick={onContinue} className="mt-4" block>
-          Continue
+          {t("continue")}
         </Button>
       </form>
       <p className="serif text-center mt-3 mb-4">
-        You can change all your info later.
+        {t("youCanChangeAllYourInfoLater")}
       </p>
     </>
   );

@@ -1,7 +1,28 @@
 {
-  "title": "Bem vindo ao react com react-i18next",
-  "description": {
-    "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
-    "part2": "Switch language between english and german using buttons above."
-  }
+  "skipTutorial": "Pular tutorial",
+  "appSlogan": "Planejamento de finanças para pessoas ocupadas",
+  "tutorialStep0Info": "Planejar suas finanças é a melhor coisa que você pode fazer para o seu bolso. \nNós fazemos isso ser simples e gratuito.",
+  "getStarted": "Começar",
+  "back": "Voltar",
+  "letsGetYouSetUp": "Vamos te ajudar passo-a-passo.",
+  "howMuchDoYouEarn": "Quanto você ganha por mês?",
+  "yourDataNeverLeavesYourDevice": "Suas informações nunca saem do seu dispositivo e você pode exportá-las quando quiser.",
+  "continue": "Continuar",
+  "youCanChangeAllYourInfoLater": "Você pode mudar suas informações mais tarde.",
+  "letsTalkAboutExpenses": "Certo, agora vamos falar sobre os seus gastos.",
+  "whichDoYouSpendMoneyOn": "Em quais desses itens você gasta dinheiro todo mês?",
+  "needMoreDetails": "Vamos precisar de só mais alguns detalhes.",
+  "howMuchDoYouSpend": "Quanto você gasta por mês com cada um desses itens?",
+  "lastQuestion": "Última pergunta, nós prometemos.",
+  "howMuchPlanningToSave": "Quanto você planeja economizar todo mês?",
+  "afterExpensesYouShouldHaveLeft": "Depois de todas as suas despesas, você deve ter {{amount}} restantes.",
+  "weRecommendSaving": "Nós recomendamos economizar pelo menos 20% dos seus ganhos totais (cerca de {{amount}}).",
+  "thatsAllWeNeeded": "Excelente, isso é tudo que precisamos!",
+  "analyzingYourExpenses": "Analisando suas despesas...",
+  "almostThere": "Estamos quase lá...",
+  "budgetSummary": "Resumo do seu orçamento",
+  "monthlySpending": "Gasto Mensal",
+  "weeklySpending": "Gasto Semanal",
+  "dailySpending": "Gasto Diário",
+  "currencySign": "$"
 }
