@@ -76,6 +76,13 @@ function Settings({ expenses, variant = "primary" }) {
               </Button>
               <Button
                 variant="link"
+                className="pl-0 d-block text-left"
+                href="mailto:fsfelicianosantana@gmail.com"
+              >
+                Contact the developer
+              </Button>
+              <Button
+                variant="link"
                 className="pl-0 mt-2 text-danger"
                 onClick={onClearDataConfirmation}
               >
