@@ -9,6 +9,7 @@ import SetupExpensesValues from "./SetupExpensesValues";
 import SetupSavings from "./SetupSavings";
 import Loading from "./Loading";
 import { useTranslation } from "react-i18next";
+import Settings from "../Settings";
 
 export default function Tutorial({ onComplete }) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -27,6 +28,7 @@ export default function Tutorial({ onComplete }) {
     <TutorialContainer>
       <TutorialHeader>
         <Logo src={logoText} alt="Joybudget Logo" />
+        <div className="flex-grow-1" />
         {currentStep === 0 && (
           <Button variant="link" onClick={() => onComplete()}>
             {t("skipTutorial")}
@@ -40,6 +42,7 @@ export default function Tutorial({ onComplete }) {
             {t("back")}
           </Button>
         )}
+        <Settings variant="primary" />
       </TutorialHeader>
       <TutorialContent>
         <Step
@@ -76,7 +79,6 @@ const TutorialHeader = styled.header`
   padding-right: 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
 `;
 
 const TutorialContent = styled.main`

@@ -8,9 +8,11 @@ import "typeface-merriweather";
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
-import "./i18n";
+import setupI18n from "./i18n";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+setupI18n(() => {
+  ReactDOM.render(<App />, document.getElementById('root'));
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

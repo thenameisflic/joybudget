@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import {
   ModalContainer,
   ModalBody,
@@ -11,8 +11,10 @@ import { ReactComponent as cogIcon } from "typicons.font/src/svg/cog.svg";
 import { expenses, recurringExpenses } from "../store/selectors";
 import { exportCsv } from "../utils/export";
 import { connect } from "react-redux";
+import i18next from "i18next";
+import numeral from "numeral";
 
-function Settings({ expenses }) {
+function Settings({ expenses, variant = "primary" }) {
   const [isOpen, setOpen] = useState(false);
   const [isExporting, setExporting] = useState(false);
   const [isClearingData, setClearingData] = useState(false);
@@ -33,9 +35,12 @@ function Settings({ expenses }) {
     window.location.reload();
   }
 
+  const language = i18next.language.toLowerCase();
+  console.log(numeral.locales);
+
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
+      <Button variant={variant} onClick={() => setOpen(true)}>
         <SettingsIcon />
       </Button>
       <ModalContainer show={isOpen} onHide={() => setOpen(false)}>
@@ -45,6 +50,22 @@ function Settings({ expenses }) {
         <ModalBody>
           {!isClearingData && (
             <>
+              <Form.Group controlId="changeLanguageSelect">
+                <Form.Label>Currency</Form.Label>
+                <Form.Control as="select" value={language} onChange={evt => {
+                  var params = [
+                    "lng=" + evt.target.value
+                  ];
+                  
+                window.location.href =
+                    "http://" +
+                    window.location.host +
+                    window.location.pathname +
+                    '?' + params.join('&');
+                }}>
+                  {Object.entries(numeral.locales).map(([key, locale]) => <option key={key} value={key}>{locale.currency.symbol} ({key})</option>)}
+                </Form.Control>
+              </Form.Group>
               <Button
                 variant="link"
                 className="pl-0 d-block"

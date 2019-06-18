@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { Form, InputGroup } from "react-bootstrap";
 import numeral from "numeral";
-import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const InputGroupText = styled(InputGroup.Text)`
   background: none;
@@ -18,7 +18,6 @@ const FormControl = styled(Form.Control)`
 `;
 
 export default function ExpenseInput({title, renderLabel, name, className, initialValue, onUpdateExpense, isIncome, onFocus}) {
-  const { t } = useTranslation();
   const [ value, setValue ] = useState(format(initialValue));
   const [ oldValue, setOldValue ] = useState(format(initialValue));
   const inputRef = useRef(null);
@@ -31,11 +30,15 @@ export default function ExpenseInput({title, renderLabel, name, className, initi
     setValue(format(initialValue));
   }, [initialValue]);
 
+  let currencySign = "$";
+  if (numeral.locales[i18n.language.toLowerCase()])
+    currencySign = numeral.locales[i18n.language.toLowerCase()].currency.symbol;
+
   return <Form.Group className={className}>
     {renderLabel ? renderLabel() : <Form.Label>{title}</Form.Label>}
     <InputGroup>
       <InputGroup.Prepend>
-        <InputGroupText id={name + "inputGroupPrepend"}>{t("currencySign")}</InputGroupText>
+        <InputGroupText id={name + "inputGroupPrepend"}>{currencySign}</InputGroupText>
       </InputGroup.Prepend>
       <FormControl
         placeholder={numeral(0).format("0,0.00")}
